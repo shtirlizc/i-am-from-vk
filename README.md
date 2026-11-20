@@ -1,5 +1,7 @@
 # Astro Starter Kit: Minimal
 
+[Инструкция для агента по настройке нового статического Astro-проекта](docs/project-setup.md).
+
 ```sh
 npm create astro@latest -- --template minimal
 ```
