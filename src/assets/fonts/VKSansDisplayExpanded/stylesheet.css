@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'VK Sans Display Expanded';
+    src: url('VKSansDisplayExp-Blk.woff2') format('woff2'),
+        url('VKSansDisplayExp-Blk.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
