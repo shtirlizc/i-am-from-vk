@@ -1,2 +1,26 @@
 ---
+interface Props {
+  tagName?: "h1" | "h2";
+}
+
+const { tagName = "h2" } = Astro.props;
+const TagName = tagName;
 ---
+
+<TagName class="title">
+  <slot />
+</TagName>
+
+<style>
+  .title {
+    color: var(--color-primary);
+    font-family: var(--font-secondary), sans-serif;
+    font-weight: 900;
+    font-size: 55px;
+    line-height: 110%;
+
+    &:is(h1) {
+      font-size: 85px;
+    }
+  }
+</style>

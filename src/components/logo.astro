@@ -1,2 +1,24 @@
 ---
+import LogoSvg from "../assets/svg/logo.svg";
 ---
+
+<a href="#top" class="logo">
+  <LogoSvg />
+</a>
+
+<style>
+  .logo {
+    display: inline-block;
+    font-size: 0;
+
+    &:hover {
+      svg g path {
+        fill: var(--color-primary);
+      }
+    }
+
+    svg g path {
+      transition: fill var(--transition) ease-in-out;
+    }
+  }
+</style>

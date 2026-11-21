@@ -1,0 +1,77 @@
+---
+interface Props {
+  href: string;
+  isTargetBlank?: boolean;
+  color?: "primary" | "text";
+  view?: "filled" | "outline" | "link";
+}
+
+const { href, isTargetBlank, color = "primary", view = "filled" } = Astro.props;
+---
+
+<a
+  class:list={["link", `link--color-${color}`, `link--view-${view}`]}
+  href={href}
+  target={isTargetBlank ? "_blank" : undefined}
+  rel={isTargetBlank ? "noopener noreferrer" : undefined}
+>
+  <slot />
+</a>
+
+<style>
+  .link {
+    height: 55px;
+    line-height: 55px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 0 29px;
+    font-family: var(--font-primary), sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    border-radius: var(--border-radius12);
+    border: 1px solid;
+    transition:
+      color var(--transition) ease-in-out,
+      border var(--transition) ease-in-out,
+      background-color var(--transition) ease-in-out;
+
+    &.link--color-primary {
+      --accent-color: var(--color-primary);
+      --border-color: var(--color-primary);
+    }
+    &.link--color-text {
+      --accent-color: var(--color-text-primary);
+      --border-color: #191a23;
+    }
+
+    &.link--view-filled {
+      background-color: var(--accent-color);
+      color: var(--color-white);
+      border-color: var(--accent-color);
+
+      &:hover {
+        background-color: transparent;
+        color: var(--accent-color);
+      }
+    }
+    &.link--view-outline {
+      border-color: var(--border-color);
+      color: var(--accent-color);
+
+      &:hover {
+        background-color: var(--accent-color);
+        color: var(--color-white);
+      }
+    }
+    &.link--view-link {
+      border-color: transparent;
+      color: var(--accent-color);
+
+      &:hover {
+        border-color: var(--accent-color);
+      }
+    }
+  }
+</style>

@@ -1,2 +1,38 @@
 ---
+import Logo from "./logo.astro";
+import Container from "./container.astro";
+import Link from "./link.astro";
 ---
+
+<header class="header">
+  <Container>
+    <div class="header__content">
+      <Logo />
+      <nav>
+        <Link href="#routes" color="text" view="link">
+          Наши маршруты
+        </Link>
+        <Link href="https://vk.ru" isTargetBlank color="text" view="outline">
+          Принять участие
+        </Link>
+      </nav>
+    </div>
+  </Container>
+</header>
+
+<style>
+  .header {
+    padding: var(--space48) 0 var(--space40);
+
+    & .header__content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      nav {
+        display: flex;
+        gap: var(--space24);
+      }
+    }
+  }
+</style>
