@@ -1,12 +1,115 @@
 ---
 import Title from "../components/title.astro";
+import Container from "../components/container.astro";
 ---
 
 <section class="intro">
-  <Title>Мы все — одна большая команда VK</Title>
+  <Container>
+    <div class="intro__body">
+      <Title>Мы все — одна большая команда VK</Title>
+      <div class="intro__content">
+        <div class="intro__lead">
+          <p>
+            Мы работаем вместе, при этом у каждого из нас своя география, свои
+            любимые места и истории.
+          </p>
+          <p>
+            Этот сайт — наш первый шаг к созданию карты любимых мест сотрудников
+            VK. Пока мы запускаем его в пилотном формате и хотим рассказать о
+            нас через города, в которых мы родились или живём сейчас.
+          </p>
+        </div>
+        <div class="intro__description">
+          <p>
+            Мы знаем их не по туристическим буклетам, а изнутри: где выпить
+            самый вкусный кофе, куда сбежать от суеты, какие дворы хранят
+            маленькие городские истории и где находятся необычные музеи,
+            о которых не рассказывают гиды.
+          </p>
+          <p>
+            Здесь собираем любимые места наших сотрудников — чтобы благодаря
+            друг другу увидеть знакомые города по‑новому или найти интересные
+            маршруты для следующих путешествий. Это возможность поделиться
+            частичкой своего мира с коллегами и открыть для себя их мир
+            через личные рекомендации и советы.
+          </p>
+        </div>
+      </div>
+      <button
+        class="intro__button"
+        type="button"
+        aria-label="Рассказать о любимом месте"
+      >
+        Рассказать о любимом месте
+      </button>
+    </div>
+  </Container>
 </section>
 
 <style>
   .intro {
+    & .intro__body {
+      display: flex;
+      flex-direction: column;
+
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space24);
+      }
+    }
+
+    & .intro__content {
+      display: flex;
+      flex-direction: column;
+
+      & > div {
+        /* desktop */
+        @media (width >= 960px) {
+          display: flex;
+          flex-direction: column;
+        }
+      }
+
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space36);
+      }
+    }
+
+    & .intro__lead {
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 1;
+      color: var(--color-text-secondary);
+
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space32);
+      }
+    }
+
+    & .intro__description {
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space32);
+      }
+    }
+
+    & .intro__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      align-self: center;
+      gap: var(--space8);
+      border: 0;
+      border-radius: 11.5px;
+      padding: var(--space16) 29px;
+      background-color: var(--color-primary);
+      color: var(--color-white);
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 23px;
+      text-align: center;
+    }
   }
 </style>
