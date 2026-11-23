@@ -1,12 +1,40 @@
 ---
 import Title from "../components/title.astro";
+import Description from "./description.astro";
+import Link from "../components/link.astro";
+import Container from "../components/container.astro";
 ---
 
 <section class="request-link">
-  <Title>Знакомимся друг с другом через наши города</Title>
+  <Container>
+    <div class="request-link__content">
+      <Title>Знакомимся друг с другом через наши города</Title>
+      <div class="request-link__description">
+        <Description>
+          Поделитесь локациями, которые вы любите и которые вас вдохновляют, и
+          помогите коллегам открыть для себя что-то новое и узнать о вас немного
+          больше.
+        </Description>
+      </div>
+      <div>
+        <Link href="#">Я в деле</Link>
+      </div>
+    </div>
+  </Container>
 </section>
 
 <style>
   .request-link {
+    text-align: center;
+
+    & .request-link__content {
+      display: grid;
+      gap: var(--space32);
+    }
+
+    & .request-link__description {
+      max-width: var(--content-width-sm);
+      margin-inline: auto;
+    }
   }
 </style>
