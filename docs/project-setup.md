@@ -1,6 +1,6 @@
 # Настройка статического проекта Astro
 
-Инструкция для агента, работающего в уже созданном Astro-проекте. Подготовь зависимости, форматирование, проверку типов, локальные шрифты и базовые глобальные стили. Сохрани существующий код и настройки, которые не относятся к этой задаче.
+Инструкция для агента, работающего в уже созданном Astro-проекте. Подготовь зависимости, форматирование, проверку типов, локальные шрифты и базовые глобальные стили. Закрепи правила адаптивного CSS в `AGENTS.md`. По выбору пользователя настрой деплой на GitHub Pages. Сохрани существующий код и настройки, которые не относятся к этой задаче.
 
 Этот файл самодостаточен: все необходимые шаблоны приведены ниже. Файлы других проектов, их история и предыдущая переписка не нужны.
 
@@ -12,7 +12,7 @@
 
 ## 1. Изучи проект и запроси входные данные
 
-Прочитай применимые `AGENTS.md`, проверь состояние Git, `package.json`, lock-файл, конфигурацию Astro, TypeScript, стили, страницы и компоненты. Не перезаписывай пользовательские изменения. При повторном запуске дополни уже существующую настройку, не создавай дубликаты.
+Прочитай применимые `AGENTS.md`, проверь состояние Git, `package.json`, lock-файл, конфигурацию Astro, TypeScript, стили, страницы и компоненты. Изучи существующие workflows в `.github/workflows/`, Git remote и основную ветку репозитория. Не перезаписывай пользовательские изменения. При повторном запуске дополни уже существующую настройку, не создавай дубликаты.
 
 Ниже команды для npm. Если проект уже использует другой менеджер пакетов, используй его и существующий lock-файл. Не создавай второй lock-файл.
 
@@ -24,6 +24,7 @@
 - [Локальный провайдер шрифтов](https://docs.astro.build/en/reference/font-provider-reference/).
 - [TypeScript и проверка типов](https://docs.astro.build/en/guides/typescript/).
 - [Команды CLI](https://docs.astro.build/en/reference/cli-reference/).
+- Если выбран деплой: [Astro на GitHub Pages](https://docs.astro.build/en/guides/deploy/github/) и [GitHub Pages через Actions](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages).
 
 Уточни только то, чего нет в задании или достоверно в проекте. Собери вопросы одним блоком:
 
@@ -35,11 +36,14 @@
 | Палитра                  | Основной цвет, фон, основной и дополнительный цвета текста                                                  |
 | Метаданные               | Язык документа и название страницы                                                                          |
 | Слайдер                  | Нужен ли Swiper                                                                                             |
+| GitHub Pages             | Нужно ли настроить деплой на GitHub Pages в этом репозитории?                                               |
 | Переопределения          | Есть ли отличия от базовых CSS-настроек ниже                                                                |
 
 Не переноси название бренда, шрифты и палитру из примеров или другого проекта. Если дизайн требует дополнительных переменных, спроси их значения. Для фавиконок используй существующие файлы; при необходимости замены запроси материалы и не добавляй ссылки на отсутствующие файлы.
 
 После ответов приступай к обычным правкам без повторных согласований. Если ответ нужен для конкретного этапа, продолжай независимую работу. Не подменяй отсутствующие материалы выдуманными файлами.
+
+Деплой на GitHub Pages настраивай только после положительного ответа или прямого запроса пользователя. Если деплой нужен, уточни только недостающие данные: репозиторий GitHub, ветку публикации и собственный домен, если он нужен. Если пользователь отказался, пропусти раздел 11, сохрани существующие настройки деплоя и выполни остальные этапы. Если ответ ещё не получен, продолжай независимые этапы; вопрос о деплое оставь открытым.
 
 ## 2. Проверь версии Node и зависимостей
 
@@ -392,7 +396,7 @@ button {
 
 ## 10. Добавь справочник медиазапросов
 
-Создай `src/styles/media-example.css` как справочный файл. Не импортируй его в `_main.css`: пустые примеры не нужны в рабочем CSS. При вёрстке переноси нужные условия в соответствующие компоненты.
+Проверь, есть ли в проекте справочник медиазапросов, в том числе под именем `src/styles/media-exmple.css`. Если он уже есть, сохрани его имя и существующие условия; не создавай второй справочник. Если справочника нет, создай `src/styles/media-example.css` по шаблону ниже. Не импортируй его в `_main.css`: пустые примеры не нужны в рабочем CSS. При вёрстке переноси нужные условия в соответствующие компоненты.
 
 ```css
 /* mobile */
@@ -448,7 +452,170 @@ button {
 
 Это независимые примеры, а не непересекающееся разбиение всех экранов. Отдельный пример для диапазона 1332–1599px здесь не задан; для него действует условие `width >= 1200px`.
 
-## 11. Проверь результат
+### Добавь правила Responsive CSS в AGENTS.md
+
+Создай `AGENTS.md` в корне нового проекта, если его нет. Если файл существует, сохрани остальные разделы и добавь `## Responsive CSS`. Если такой раздел уже есть, дополни его недостающими правилами без дублирования и сохрани дополнительные ограничения проекта. Этот этап обязателен и не зависит от выбора GitHub Pages.
+
+Ниже полный текст раздела для нового проекта. В нём указан стандартный путь `src/styles/media-example.css`; если используется существующий справочник с другим именем, замени все упоминания пути на фактический. Сверь названия и порядок брейкпоинтов с этим справочником, сохранив порядок от меньшей ширины к большей. Другие разделы `AGENTS.md` из чужих проектов переносить не нужно.
+
+````markdown
+## Responsive CSS
+
+These rules are mandatory for authored CSS throughout this repository, including Astro `<style>` blocks and standalone stylesheets. Follow them when adding or modifying responsive styles.
+
+- Nest each responsive `@media` block inside the selector whose declarations it changes. Keep all responsive declarations for an element together with its base declarations.
+- Within each selector, put base declarations first, then its responsive `@media` blocks, then any nested selectors. Apply this structure recursively: a nested selector must contain its own media queries.
+- Inside a nested media query, write the changed declarations directly. Do not repeat the owning selector or collect several selectors into a separate page-level media block.
+- Use the viewport-width conditions defined in `src/styles/media-example.css` by default. Read that file before writing responsive styles. A custom breakpoint is allowed only as an exception when the existing conditions cannot accommodate a concrete layout requirement, not merely for convenience.
+- When a custom breakpoint is necessary, add its condition to `src/styles/media-example.css` with a descriptive breakpoint-name comment and a brief explanation of the layout requirement. Insert it in mobile-first order, then use the same condition and name in component styles. Do not change existing breakpoint conditions to solve a local layout issue.
+- Immediately above each `@media` block, include the exact breakpoint-name comment from that file, such as `/* tablet */` or `/* desktop */`.
+- Order media blocks within every selector mobile-first: narrower viewport ranges come before wider ones. The standard catalog order is `mobile`, `wide-mobile`, `wide-mobile-only`, `tablet`, `tablet-only`, `desktop`, `desktop-only`, `widescreen`, `widescreen-only`, `fullhd`; insert exceptional breakpoints at their corresponding viewport widths. At the same minimum width, put the general rule before its `-only` range. Include only the breakpoints that are needed.
+- Preserve selector specificity and the intended cascade when reorganizing existing styles. Do not move responsive rules into distant blocks at the end of a component or stylesheet.
+
+Required structure:
+
+```css
+.header {
+  padding: var(--space24) 0;
+
+  /* tablet */
+  @media (width >= 768px) {
+    padding: var(--space32) 0;
+  }
+
+  /* desktop */
+  @media (width >= 960px) {
+    padding: var(--space48) 0 var(--space40);
+  }
+
+  & .header__content {
+    display: flex;
+    flex-direction: column;
+
+    /* tablet */
+    @media (width >= 768px) {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      display: flex;
+      gap: var(--space24);
+    }
+  }
+}
+```
+
+`src/styles/media-example.css` is the breakpoint reference; its top-level media queries are examples, not component styles to restructure.
+````
+
+## 11. Настрой GitHub Pages, если пользователь выбрал деплой
+
+Положительный ответ разрешает подготовить файлы настройки в текущем проекте. Коммит, push, запуск публикации и изменение настроек репозитория выполняй только по отдельному запросу пользователя.
+
+### Определи адрес и ветку
+
+Возьми владельца и имя репозитория из Git remote, а основную ветку — из доступных метаданных репозитория. Не предполагай, что ветка всегда называется `main`. Если репозиторий ещё не подключён или данные неоднозначны, уточни их у пользователя; не создавай репозиторий автоматически.
+
+Настрой `site` и `base` в существующем `astro.config.mjs`, сохранив шрифты и другие параметры. Для обычного репозитория без собственного домена используй следующую структуру:
+
+```js
+export default defineConfig({
+  site: "https://OWNER.github.io",
+  base: "/REPOSITORY",
+  // Сохрани остальные настройки проекта.
+});
+```
+
+Замени `OWNER` и `REPOSITORY` реальными значениями текущего репозитория. Для репозитория `OWNER.github.io` сайт размещается в корне: задай `site`, а `base` оставь `/` или не указывай. Если выбран собственный домен, используй его HTTPS-адрес в `site` и корневой `base`; опиши необходимые настройки домена в Pages и DNS. Не переноси адреса и домены из другого проекта.
+
+Проверь ссылки на внутренние страницы и файлы из `public/`, в том числе фавиконки. При размещении в подпапке учитывай `import.meta.env.BASE_URL`; не добавляй префикс повторно к импортируемым ресурсам, которыми уже управляет Astro. Например, для существующего `public/favicon.svg`:
+
+```astro
+---
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<link rel="icon" type="image/svg+xml" href={`${baseUrl}/favicon.svg`} />
+```
+
+При соединении путей убирай завершающий слеш из `BASE_URL` и добавляй один слеш перед именем файла, как в примере. Это работает и для корневого `base: "/"`, и для подпапки, независимо от настройки `trailingSlash`. Проверь итоговые URL в сборке и доступность фавиконок через dev-сервер по адресу с учётом `base`. Ссылки на якоря и внешние сайты сохрани. Укажи в README локальный путь сайта, если он изменился из-за `base`.
+
+### Подготовь workflow
+
+Если workflow деплоя уже существует, дополни его вместо создания второго. Иначе создай `.github/workflows/deploy.yaml`. Перед настройкой сверь стабильные версии Actions с их официальными репозиториями: номера в шаблоне служат отправной точкой и могут устареть.
+
+Ниже шаблон для npm и ветки `main`. Замени `main` на согласованную ветку в `on.push.branches` и в условии задания `build`. Для другого менеджера пакетов адаптируй настройку кеша и команды установки и сборки; используй установку строго по существующему lock-файлу.
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check and build
+        run: npm run build
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5
+```
+
+Workflow должен использовать Node.js из `.nvmrc`, запускать проверку типов через существующий build script и передавать результат сборки из `build` в `deploy`. Если проект использует нестандартный `outDir`, укажи его вместо `dist`. Права `pages: write` и `id-token: write` выдавай только заданию публикации. Сохрани защиту от публикации из других веток при ручном запуске и последовательное выполнение деплоев без прерывания текущего.
+
+Используй официальные Actions: [checkout](https://github.com/actions/checkout), [setup-node](https://github.com/actions/setup-node), [upload-pages-artifact](https://github.com/actions/upload-pages-artifact) и [deploy-pages](https://github.com/actions/deploy-pages). Не добавляй персональный токен или отдельную ветку с результатом сборки: для этой схемы достаточно встроенного `GITHUB_TOKEN`.
+
+### Опиши первый запуск
+
+Добавь в README итоговый адрес сайта, ветку публикации, способ ручного запуска workflow и действия перед первым деплоем: **Settings → Pages → Build and deployment → Source → GitHub Actions**. Если Pages недоступен для репозитория, сообщи причину; не меняй его видимость или тариф самостоятельно.
+
+В итоговом отчёте отдели готовность файлов настройки от фактической публикации. Если отдельного запроса на публикацию не было, укажи оставшиеся действия: выбрать источник Pages, закоммитить и отправить изменения в согласованную ветку. После успешного деплоя URL доступен также в окружении `github-pages`.
+
+## 12. Проверь результат
 
 Отформатируй созданные и изменённые исходники и документацию локальным Prettier. Используй явный список файлов, чтобы не затронуть посторонние правки и временные материалы. Например:
 
@@ -473,6 +640,9 @@ npm run build
 - Глобальные стили импортируются, палитра заполнена, схема светлая, если не было переопределения.
 - Swiper и его стили присутствуют только при подтверждённой необходимости.
 - Значения контейнера и шапки не добавлены без задачи на соответствующую вёрстку.
+- В корневом `AGENTS.md` есть один раздел `Responsive CSS` со всеми правилами и примером; путь к справочнику медиазапросов существует, а названия и порядок брейкпоинтов согласованы с ним. Остальные инструкции проекта сохранены.
+- Если выбран GitHub Pages: workflow соответствует ветке и менеджеру пакетов проекта, `site` и `base` соответствуют адресу публикации, а локальные ресурсы в итоговых HTML и CSS доступны с учётом `base`.
+- Если выбран GitHub Pages: README содержит адрес сайта и инструкцию первого запуска; состояние фактической публикации указано отдельно.
 - `git diff --check` не обнаруживает ошибок пробелов, если проект находится под Git.
 
 Если сборку блокирует окружение, сообщи точную причину и используй предусмотренный средой механизм разрешений, не меняя архитектуру проекта ради обхода ограничения. Fonts API некоторых версий Astro может поднимать временный HTTP-сервер при сборке; запрет открытия порта в песочнице не означает ошибку настройки шрифтов.
@@ -488,4 +658,4 @@ npm run astro -- dev stop
 
 Не предполагай наличие фоновых команд в старой версии Astro: сначала проверь справку установленного CLI. Не добавляй в проект требование неподдерживаемой команды.
 
-В конце кратко перечисли изменения, согласованные параметры и результаты проверок. Если ожидается конвертация или ответ пользователя, явно укажи незавершённый этап. Не объявляй настройку завершённой до подключения шрифтов и успешной проверки доступных этапов. Коммит и публикацию выполняй только по отдельному запросу.
+В конце кратко перечисли изменения, согласованные параметры, выбор пользователя по GitHub Pages и результаты проверок. Если ожидается конвертация или ответ пользователя, явно укажи незавершённый этап. Не объявляй настройку завершённой до подключения шрифтов и успешной проверки доступных этапов. Коммит и публикацию выполняй только по отдельному запросу.
