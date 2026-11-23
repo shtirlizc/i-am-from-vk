@@ -1,16 +1,18 @@
 ---
 import Title from "../components/title.astro";
 import Container from "../components/container.astro";
-import one from "../assets/images/instruction/instruction-number1.png";
-import two from "../assets/images/instruction/instruction-number2.png";
-import photo from "../assets/images/instruction/instruction-img5.png";
 import Image from "astro/components/Image.astro";
-import leftPhoto from "../assets/images/instruction/instruction-img1.png";
+import one from "../assets/images/instruction/instruction-number1.webp";
+import two from "../assets/images/instruction/instruction-number2.webp";
+import photo from "../assets/images/instruction/instruction-img3.webp";
+import leftPhoto from "../assets/images/instruction/instruction-img1.webp";
+import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
 ---
 
 <section class="instruction">
   <Container>
     <div class="instruction__body">
+      <Image class="instruction__photo-right" src={rightPhoto} alt="" />
       <div class="instruction__title">
         <Title>Расскажите о ваших любимых местах</Title>
       </div>
@@ -24,7 +26,7 @@ import leftPhoto from "../assets/images/instruction/instruction-img1.png";
         <div class="instruction__description">
           <div class="instruction__first-step">
             <p>
-              <Image src={one} width={254} height={254} alt="Единица" />
+              <Image src={one} width={254} height={254} alt="" />
             </p>
             <p>
               Заполните небольшую{" "}
@@ -39,18 +41,18 @@ import leftPhoto from "../assets/images/instruction/instruction-img1.png";
                 src={photo}
                 width={366}
                 height={289}
-                alt="Ребята в офисе"
+                alt=""
               />
             </div>
             <Image
               class="instruction__photo-left"
               src={leftPhoto}
-              alt="Здание со стеклянным фасадом"
+              alt=""
             />
           </div>
           <div class="instruction__second-step">
             <p>
-              <Image src={two} width={254} height={254} alt="Двойка" />
+              <Image src={two} width={254} height={254} alt="" />
             </p>
             <p>
               Мы соберём ваши ответы в карточку — и она появится на нашей карте
@@ -71,14 +73,31 @@ import leftPhoto from "../assets/images/instruction/instruction-img1.png";
     & .instruction__content {
       display: flex;
       flex-direction: column;
-      max-width: var(--content-with);
+      max-width: var(--content-width);
       margin-inline: auto;
     }
 
     & .instruction__body {
+      position: relative;
+
       /* desktop */
       @media (width >= 960px) {
         gap: var(--space32);
+      }
+    }
+
+    & .instruction__photo-right {
+      display: none;
+      position: absolute;
+      block-size: auto;
+      pointer-events: none;
+
+      /* desktop */
+      @media (width >= 960px) {
+        display: block;
+        inline-size: 572px;
+        inset-block-start: 120px;
+        inset-inline-start: calc(50% + 322px);
       }
     }
 
@@ -133,10 +152,10 @@ import leftPhoto from "../assets/images/instruction/instruction-img1.png";
             inset-inline-end: calc(100% - 80px);
           }
         }
+      }
 
-        & .instruction__second-step {
-          align-self: end;
-        }
+      & .instruction__second-step {
+        align-self: end;
       }
     }
   }

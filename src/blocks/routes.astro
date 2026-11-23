@@ -7,6 +7,8 @@ import Map from "../assets/svg/map.svg";
 import Container from "../components/container.astro";
 
 import author1 from "../assets/images/routes/author-1.webp";
+import pinDecoration from "../assets/images/routes/routes-img2.webp";
+import starDecoration from "../assets/images/routes/routes-img1.webp";
 
 interface Link {
   href: string;
@@ -258,8 +260,12 @@ const points: IPoint[] = [
   </div>
 
   <Container>
-    <div class="routes__body">
-      <Map />
+    <div class="routes__map">
+      <Image class="routes__decoration-left" src={pinDecoration} alt="" />
+      <Image class="routes__decoration-right" src={starDecoration} alt="" />
+      <div class="routes__body">
+        <Map />
+      </div>
     </div>
   </Container>
 
@@ -320,9 +326,45 @@ const points: IPoint[] = [
       margin-inline: auto;
     }
 
-    & .routes__body {
-      background-color: var(--color-white);
+    & .routes__map {
+      position: relative;
       margin-top: 64px;
+    }
+
+    & .routes__decoration-left,
+    & .routes__decoration-right {
+      display: none;
+      position: absolute;
+      block-size: auto;
+      pointer-events: none;
+
+      /* desktop */
+      @media (width >= 960px) {
+        display: block;
+      }
+    }
+
+    & .routes__decoration-left {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 1151px;
+        inset-block-start: -352px;
+        inset-inline-end: calc(100% - 412px);
+      }
+    }
+
+    & .routes__decoration-right {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 1108.5px;
+        inset-block-start: calc(100% - 430px);
+        inset-inline-start: calc(100% - 420px);
+      }
+    }
+
+    & .routes__body {
+      position: relative;
+      background-color: var(--color-white);
       box-shadow: 0 4px 4px 0 #00000040;
       font-size: 0;
       padding: var(--space20);
