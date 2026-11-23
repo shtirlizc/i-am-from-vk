@@ -52,8 +52,3 @@ ol {
 button {
   -webkit-tap-highlight-color: transparent;
 }
-
-.swiper {
-  overflow: hidden;
-  width: 100%;
-}
