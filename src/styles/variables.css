@@ -36,7 +36,6 @@
   --timing-func: cubic-bezier(0.21, 0, 0.29, 1);
 
   --container: 1160px;
-  --header: 143px;
+  --header: 150px;
   --content-with: 960px;
-  --section-gap: 164px;
 }
