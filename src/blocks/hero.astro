@@ -1,12 +1,129 @@
 ---
+import { Image } from "astro:assets";
 import Title from "../components/title.astro";
+import Container from "../components/container.astro";
+
+import topLeftImg from "../assets/images/hero/top-left.webp";
+import topRightImg from "../assets/images/hero/top-right.webp";
+import bottomImg from "../assets/images/hero/bottom.webp";
+import bottom1Img from "../assets/images/hero/bottom-1.webp";
+import bottom2Img from "../assets/images/hero/bottom-2.webp";
+import bottom3Img from "../assets/images/hero/bottom-3.webp";
+import bottom4Img from "../assets/images/hero/bottom-4.webp";
+import bottom5Img from "../assets/images/hero/bottom-5.webp";
+import bottom6Img from "../assets/images/hero/bottom-6.webp";
 ---
 
 <section class="hero">
-  <Title tagName="h1">«Я из VK»: города, которые мы любим</Title>
+  <Container>
+    <div class="hero__content">
+      <Image src={topLeftImg} width={312} height={257} alt="" data-img="1" />
+      <Image src={topRightImg} width={197} height={164} alt="" data-img="2" />
+
+      <Title tagName="h1">«Я из VK»: города, которые мы любим</Title>
+      <div class="hero__description">Путеводитель от сотрудников</div>
+    </div>
+  </Container>
+
+  <div class="hero__foot">
+    <div class="hero__foot-content">
+      <Image src={bottomImg} width={2318} height={660} alt="" />
+
+      <Image src={bottom1Img} width={405} height={440} alt="" data-img="1" />
+      <Image src={bottom2Img} width={313} height={382} alt="" data-img="2" />
+      <Image src={bottom3Img} width={613} height={565} alt="" data-img="3" />
+      <Image src={bottom4Img} width={630} height={420} alt="" data-img="4" />
+      <Image src={bottom5Img} width={305} height={305} alt="" data-img="5" />
+      <Image src={bottom6Img} width={878} height={378} alt="" data-img="6" />
+    </div>
+  </div>
 </section>
 
 <style>
   .hero {
+    padding: 6.5rem 0 0;
+    text-align: center;
+    overflow: hidden;
+
+    & .hero__content {
+      position: relative;
+      font-size: 0;
+
+      img {
+        position: absolute;
+
+        &[data-img="1"] {
+          top: -7.5rem;
+          right: calc(100% - 32px);
+        }
+
+        &[data-img="2"] {
+          top: -4rem;
+          left: calc(100% - 50px);
+        }
+      }
+    }
+
+    & .hero__description {
+      margin-top: var(--space36);
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 100%;
+      color: var(--color-text-secondary);
+    }
+
+    & .hero__foot {
+      display: flex;
+      justify-content: center;
+
+      & .hero__foot-content {
+        position: relative;
+        margin-top: -105px;
+        transform: translate(14px);
+
+        img {
+          &[data-img] {
+            position: absolute;
+            transform: translateY(105px);
+          }
+
+          &[data-img="1"] {
+            top: -118px;
+            left: 132px;
+            z-index: 1;
+          }
+
+          &[data-img="2"] {
+            top: 88px;
+            left: 372px;
+            z-index: 3;
+          }
+
+          &[data-img="3"] {
+            top: -66px;
+            left: 579px;
+            z-index: 2;
+          }
+
+          &[data-img="4"] {
+            top: 92px;
+            right: 530px;
+            z-index: 1;
+          }
+
+          &[data-img="5"] {
+            top: -40px;
+            right: 658px;
+            z-index: 3;
+          }
+
+          &[data-img="6"] {
+            top: 82px;
+            right: 15px;
+            z-index: 2;
+          }
+        }
+      }
+    }
   }
 </style>
