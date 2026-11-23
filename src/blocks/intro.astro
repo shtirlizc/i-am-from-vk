@@ -1,6 +1,7 @@
 ---
 import Title from "../components/title.astro";
 import Container from "../components/container.astro";
+import Link from "../components/link.astro";
 ---
 
 <section class="intro">
@@ -35,13 +36,11 @@ import Container from "../components/container.astro";
           </p>
         </div>
       </div>
-      <button
-        class="intro__button"
-        type="button"
-        aria-label="Рассказать о любимом месте"
-      >
-        Рассказать о любимом месте
-      </button>
+      <div class="intro__button">
+        <Link href="https://vk.ru" isTargetBlank>
+          Рассказать о любимом месте
+        </Link>
+      </div>
     </div>
   </Container>
 </section>
@@ -96,19 +95,6 @@ import Container from "../components/container.astro";
     }
 
     & .intro__button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      align-self: center;
-      gap: var(--space8);
-      border: 0;
-      border-radius: 11.5px;
-      padding: var(--space16) 29px;
-      background-color: var(--color-primary);
-      color: var(--color-white);
-      font-weight: 600;
-      font-size: 24px;
-      line-height: 23px;
       text-align: center;
     }
   }
