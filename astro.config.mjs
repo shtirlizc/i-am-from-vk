@@ -5,6 +5,14 @@ import { defineConfig, fontProviders } from "astro/config";
 export default defineConfig({
   site: "https://shtirlizc.github.io",
   base: "/i-am-from-vk",
+  redirects: {
+    "/404": "/i-am-from-vk",
+  },
+  vite: {
+    build: {
+      cssMinify: "esbuild",
+    },
+  },
   fonts: [
     {
       provider: fontProviders.local(),
