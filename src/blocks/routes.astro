@@ -459,7 +459,7 @@ const points: IPoint[] = [
             padding: 0 13px;
             height: 28px;
             line-height: 28px;
-            background-color: #f5f5f5;
+            background-color: var(--color-bg-main);
             border-radius: 5px;
             transition:
               color var(--transition),
@@ -541,8 +541,6 @@ const points: IPoint[] = [
         marker.setAttribute("aria-expanded", "false");
 
         const activateMarker = (fromKeyboard = false) => {
-          console.log(marker.id);
-
           if (activeMarker === marker) {
             popover.hidePopover();
             return;

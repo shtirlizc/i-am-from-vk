@@ -1,9 +1,63 @@
 ---
+import { Image } from "astro:assets";
+
+import Container from "./container.astro";
+import Logo from "./logo.astro";
+
+import cityImg from "../assets/images/footer/city.webp";
+import bgImg from "../assets/images/footer/bg.webp";
+
+const year = new Date().getFullYear();
 ---
 
-<footer class="footer"></footer>
+<footer class="footer">
+  <Container>
+    <div class="footer__content">
+      <Logo />
+      <p>{year}</p>
+    </div>
+  </Container>
+
+  <div class="footer__image">
+    <div class="bg">
+      <Image src={bgImg} width={2165} height={497} alt="" />
+    </div>
+
+    <div class="city">
+      <Image src={cityImg} width={2279} height={448} alt="" />
+    </div>
+  </div>
+</footer>
 
 <style>
   .footer {
+    position: relative;
+    overflow: hidden;
+    margin-top: var(--space32);
+
+    & .footer__content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      p {
+        font-weight: 600;
+        font-size: 13px;
+        line-height: 23px;
+      }
+    }
+
+    .bg {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translate(-50%);
+    }
+
+    .city {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
   }
 </style>
