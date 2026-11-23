@@ -14,13 +14,21 @@ import RequestLink from "../blocks/request-link.astro";
 
   <body id="top">
     <Header />
-
-    <Hero />
-    <Intro />
-    <Routes />
-    <Instruction />
-    <RequestLink />
-
+    <div class="grid">
+      <Hero />
+      <Intro />
+      <Routes />
+      <Instruction />
+      <RequestLink />
+    </div>
     <Footer />
   </body>
 </html>
+
+<style>
+  .grid {
+    display: grid;
+    grid-gap: var(--section-gap);
+    overflow: hidden;
+  }
+</style>
