@@ -1,12 +1,143 @@
 ---
 import Title from "../components/title.astro";
+import Container from "../components/container.astro";
+import one from "../assets/images/instruction/instruction-number1.png";
+import two from "../assets/images/instruction/instruction-number2.png";
+import photo from "../assets/images/instruction/instruction-img5.png";
+import Image from "astro/components/Image.astro";
+import leftPhoto from "../assets/images/instruction/instruction-img1.png";
 ---
 
 <section class="instruction">
-  <Title>Расскажите о ваших любимых местах</Title>
+  <Container>
+    <div class="instruction__body">
+      <div class="instruction__title">
+        <Title>Расскажите о ваших любимых местах</Title>
+      </div>
+      <div class="instruction__content">
+        <p>
+          Каждая точка на карте — команды и люди из VK. Мы собираем не просто
+          адреса, а личные истории: любимый город, знакомые с детства улицы
+          или места, в которых человек чувствует себя как дома.
+        </p>
+        <div class="instruction__lead">Как поучаствовать:</div>
+        <div class="instruction__description">
+          <div class="instruction__first-step">
+            <p>
+              <Image src={one} width={254} height={254} alt="Единица" />
+            </p>
+            <p>
+              Заполните небольшую{" "}
+              <a href="#" target="_blank" style="text-decoration: underline;">
+                анкету
+              </a>{" "}
+              в Интранете — назовите ваш город, расскажите о самых интересных
+              местах и о том, почему в них стоит побывать.
+            </p>
+            <div class="instruction__photo">
+              <Image
+                src={photo}
+                width={366}
+                height={289}
+                alt="Ребята в офисе"
+              />
+            </div>
+            <Image
+              class="instruction__photo-left"
+              src={leftPhoto}
+              alt="Здание со стеклянным фасадом"
+            />
+          </div>
+          <div class="instruction__second-step">
+            <p>
+              <Image src={two} width={254} height={254} alt="Двойка" />
+            </p>
+            <p>
+              Мы соберём ваши ответы в карточку — и она появится на нашей карте
+              России и VK
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Container>
 </section>
 
 <style>
   .instruction {
+    text-align: center;
+
+    & .instruction__body,
+    & .instruction__content {
+      display: flex;
+      flex-direction: column;
+      max-width: var(--content-with);
+      margin-inline: auto;
+    }
+
+    & .instruction__body {
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space32);
+      }
+    }
+
+    & .instruction__content {
+      /* desktop */
+      @media (width >= 960px) {
+        gap: var(--space48);
+      }
+    }
+
+    & .instruction__lead {
+      font-weight: 600;
+      font-size: 32px;
+      line-height: 1;
+      color: var(--color-text-secondary);
+    }
+
+    & .instruction__description {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      column-gap: 103px;
+      align-items: start;
+
+      & > :last-child {
+        margin-block-start: 288px;
+      }
+
+      & .instruction__first-step {
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        align-self: start;
+        gap: 48px;
+
+        & .instruction__photo {
+          position: absolute;
+          inset-block-start: 30px;
+          inset-inline-start: calc(50% + 127px + 24.6px);
+        }
+
+        & .instruction__photo-left {
+          display: none;
+          position: absolute;
+          block-size: auto;
+          pointer-events: none;
+
+          /* desktop */
+          @media (width >= 960px) {
+            display: block;
+            inline-size: 721px;
+            inset-block-start: 5px;
+            inset-inline-end: calc(100% - 80px);
+          }
+        }
+
+        & .instruction__second-step {
+          align-self: end;
+        }
+      }
+    }
   }
 </style>
