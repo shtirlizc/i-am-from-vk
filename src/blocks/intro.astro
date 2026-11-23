@@ -6,8 +6,7 @@ import Image from "astro/components/Image.astro";
 import leftPhoto from "../assets/images/intro/intro-img1.png";
 import cathedral from "../assets/images/intro/intro-img3.png";
 import rightPhoto from "../assets/images/intro/intro-img2.png";
-import paper from "../assets/images/intro/intro-decoration1.png";
-import arrow from "../assets/images/intro/intro-decoration2.png";
+import arrow from "../assets/images/intro/intro-decoration1.png";
 ---
 
 <section class="intro">
@@ -53,8 +52,13 @@ import arrow from "../assets/images/intro/intro-decoration2.png";
           Рассказать о любимом месте
         </Link>
         <Image class="intro__arrow" src={arrow} alt="Стрелка" />
-        <Image class="intro__paper" src={paper} alt="Рванная бумага" />
-        <Image class="intro__photo-right" src={rightPhoto} alt="Фото ребят" />
+        <Image
+          class="intro__photo-right"
+          width={894}
+          height={894}
+          src={rightPhoto}
+          alt="Фото ребят"
+        />
       </div>
     </div>
   </Container>
@@ -127,7 +131,6 @@ import arrow from "../assets/images/intro/intro-decoration2.png";
 
     & .intro__photo-left,
     & .intro__cathedral,
-    & .intro__paper,
     & .intro__photo-right,
     & .intro__arrow {
       display: none;
@@ -162,10 +165,8 @@ import arrow from "../assets/images/intro/intro-decoration2.png";
     & .intro__photo-right {
       /* desktop */
       @media (width >= 960px) {
-        inline-size: 363px;
         inset-inline-start: calc(100% + 212px);
-        inset-block-start: -18px;
-        z-index: 1;
+        inset-block-start: -205px;
       }
     }
 
@@ -175,15 +176,6 @@ import arrow from "../assets/images/intro/intro-decoration2.png";
         inline-size: 327px;
         inset-inline-end: calc(100% + 76px);
         inset-block-start: -40px;
-      }
-    }
-
-    & .intro__paper {
-      /* desktop */
-      @media (width >= 960px) {
-        inline-size: 542px;
-        inset-inline-start: calc(100% + 180px);
-        inset-block-start: -190px;
       }
     }
   }
