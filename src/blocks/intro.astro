@@ -7,6 +7,7 @@ import leftPhoto from "../assets/images/intro/intro-img1.png";
 import cathedral from "../assets/images/intro/intro-img3.png";
 import rightPhoto from "../assets/images/intro/intro-img2.png";
 import arrow from "../assets/images/intro/intro-decoration1.png";
+import Description from "./description.astro";
 ---
 
 <section class="intro">
@@ -32,19 +33,22 @@ import arrow from "../assets/images/intro/intro-decoration1.png";
             src={cathedral}
             alt="Кафедральный собор"
           />
-          <p>
-            Мы знаем их не по туристическим буклетам, а изнутри: где выпить
-            самый вкусный кофе, куда сбежать от суеты, какие дворы хранят
-            маленькие городские истории и где находятся необычные музеи,
-            о которых не рассказывают гиды.
-          </p>
-          <p>
-            Здесь собираем любимые места наших сотрудников — чтобы благодаря
-            друг другу увидеть знакомые города по‑новому или найти интересные
-            маршруты для следующих путешествий. Это возможность поделиться
-            частичкой своего мира с коллегами и открыть для себя их мир
-            через личные рекомендации и советы.
-          </p>
+
+          <Description>
+            <p>
+              Мы знаем их не по туристическим буклетам, а изнутри: где выпить
+              самый вкусный кофе, куда сбежать от суеты, какие дворы хранят
+              маленькие городские истории и где находятся необычные музеи,
+              о которых не рассказывают гиды.
+            </p>
+            <p>
+              Здесь собираем любимые места наших сотрудников — чтобы благодаря
+              друг другу увидеть знакомые города по‑новому или найти интересные
+              маршруты для следующих путешествий. Это возможность поделиться
+              частичкой своего мира с коллегами и открыть для себя их мир
+              через личные рекомендации и советы.
+            </p>
+          </Description>
         </div>
       </div>
       <div class="intro__button">
@@ -70,7 +74,7 @@ import arrow from "../assets/images/intro/intro-decoration1.png";
       position: relative;
       display: flex;
       flex-direction: column;
-      max-width: var(--content-with);
+      max-width: var(--content-width);
       margin-inline: auto;
 
       /* desktop */

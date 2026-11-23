@@ -37,5 +37,6 @@
 
   --container: 1160px;
   --header: 150px;
-  --content-with: 960px;
+  --content-width: 960px;
+  --content-width-sm: 760px;
 }
