@@ -39,11 +39,11 @@
 }
 
 /* widescreen-only */
-@media (width >= 1200px) and (width < 1332px) {
+@media (width >= 1200px) and (width < 1440px) {
   /* media query rules */
 }
 
 /* fullhd */
-@media (width >= 1600px) {
+@media (width >= 1440px) {
   /* media query rules */
 }
