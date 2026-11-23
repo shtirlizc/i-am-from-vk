@@ -1,12 +1,57 @@
 ---
 import Title from "../components/title.astro";
+import Description from "./description.astro";
+import Map from "../assets/svg/map.svg";
+import Container from "../components/container.astro";
 ---
 
 <section id="routes" class="routes">
-  <Title>Маршруты от своих</Title>
+  <div class="routes__title">
+    <Title>Маршруты от своих</Title>
+  </div>
+  <div class="routes__description">
+    <Description>
+      <p>
+        На карте проекта уже собрали десятки городов и рекомендаций от ребят
+        из разных команд VK. Нажмите на флажок, чтобы узнать, кто откуда,
+        и найти свежие идеи и направления для путешествий.
+      </p>
+      <p>
+        А мы продолжаем наполнять карту новыми историями и интересными
+        локациями.
+      </p>
+    </Description>
+  </div>
+
+  <Container>
+    <div class="routes__body">
+      <Map />
+    </div>
+  </Container>
 </section>
 
 <style>
   .routes {
+    text-align: center;
+
+    & .routes__title {
+      max-width: var(--content-width);
+      margin-inline: auto;
+    }
+
+    & .routes__description {
+      margin-top: var(--space32);
+      max-width: var(--content-width-sm);
+      margin-inline: auto;
+    }
+
+    & .routes__body {
+      background-color: var(--color-white);
+      margin-top: 64px;
+      box-shadow: 0 4px 4px 0 #00000040;
+      font-size: 0;
+      padding: var(--space20);
+      border-radius: 24px;
+    }
   }
 </style>
