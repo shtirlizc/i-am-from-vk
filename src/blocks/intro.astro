@@ -2,11 +2,18 @@
 import Title from "../components/title.astro";
 import Container from "../components/container.astro";
 import Link from "../components/link.astro";
+import Image from "astro/components/Image.astro";
+import leftPhoto from "../assets/img/intro-img1.png";
+import cathedral from "../assets/img/intro-img3.png";
+import rightPhoto from "../assets/img/intro-img2.png";
+import paper from "../assets/img/intro-decoration1.png";
+import arrow from "../assets/img/intro-decoration2.png";
 ---
 
 <section class="intro">
   <Container>
     <div class="intro__body">
+      <Image class="intro__photo-left" src={leftPhoto} alt="Фото девушки" />
       <Title>Мы все — одна большая команда VK</Title>
       <div class="intro__content">
         <div class="intro__lead">
@@ -21,6 +28,11 @@ import Link from "../components/link.astro";
           </p>
         </div>
         <div class="intro__description">
+          <Image
+            class="intro__cathedral"
+            src={cathedral}
+            alt="Кафедральный собор"
+          />
           <p>
             Мы знаем их не по туристическим буклетам, а изнутри: где выпить
             самый вкусный кофе, куда сбежать от суеты, какие дворы хранят
@@ -40,6 +52,9 @@ import Link from "../components/link.astro";
         <Link href="https://vk.ru" isTargetBlank>
           Рассказать о любимом месте
         </Link>
+        <Image class="intro__arrow" src={arrow} alt="Стрелка" />
+        <Image class="intro__paper" src={paper} alt="Рванная бумага" />
+        <Image class="intro__photo-right" src={rightPhoto} alt="Фото ребят" />
       </div>
     </div>
   </Container>
@@ -48,8 +63,11 @@ import Link from "../components/link.astro";
 <style>
   .intro {
     & .intro__body {
+      position: relative;
       display: flex;
       flex-direction: column;
+      max-width: var(--content-with);
+      margin-inline: auto;
 
       /* desktop */
       @media (width >= 960px) {
@@ -88,6 +106,8 @@ import Link from "../components/link.astro";
     }
 
     & .intro__description {
+      position: relative;
+
       /* desktop */
       @media (width >= 960px) {
         gap: var(--space32);
@@ -95,7 +115,76 @@ import Link from "../components/link.astro";
     }
 
     & .intro__button {
+      position: relative;
+      align-self: center;
       text-align: center;
+
+      /* desktop */
+      @media (width >= 960px) {
+        margin-block-start: calc(64px - var(--space24));
+      }
+    }
+
+    & .intro__photo-left,
+    & .intro__cathedral,
+    & .intro__paper,
+    & .intro__photo-right,
+    & .intro__arrow {
+      display: none;
+      position: absolute;
+      block-size: auto;
+      pointer-events: none;
+
+      /* desktop */
+      @media (width >= 960px) {
+        display: block;
+      }
+    }
+
+    & .intro__photo-left {
+      /* desktop */
+      @media (width >= 960px) {
+        inset-block-start: 24px;
+        inset-inline-end: calc(100% + 191px);
+        inline-size: 206px;
+      }
+    }
+
+    & .intro__cathedral {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 395px;
+        inset-block-start: -210px;
+        inset-inline-end: calc(100% - 31px);
+      }
+    }
+
+    & .intro__photo-right {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 363px;
+        inset-inline-start: calc(100% + 212px);
+        inset-block-start: -18px;
+        z-index: 1;
+      }
+    }
+
+    & .intro__arrow {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 327px;
+        inset-inline-end: calc(100% + 76px);
+        inset-block-start: -40px;
+      }
+    }
+
+    & .intro__paper {
+      /* desktop */
+      @media (width >= 960px) {
+        inline-size: 542px;
+        inset-inline-start: calc(100% + 180px);
+        inset-block-start: -190px;
+      }
     }
   }
 </style>
