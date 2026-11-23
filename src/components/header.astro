@@ -22,7 +22,20 @@ import Link from "./link.astro";
 
 <style>
   .header {
-    padding: var(--space48) 0 var(--space40);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    height: var(--header);
+    background-color: var(--color-bg-main);
+
+    @supports (animation-timeline: scroll(root block)) and
+      (animation-range: 0 400px) {
+      animation: header-shrink linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 400px;
+    }
 
     & .header__content {
       display: flex;
@@ -33,6 +46,20 @@ import Link from "./link.astro";
         display: flex;
         gap: var(--space24);
       }
+    }
+  }
+
+  @keyframes header-shrink {
+    from {
+      height: var(--header);
+      background-color: transparent;
+      box-shadow: 0 4px 16px rgb(0 0 0 / 0%);
+    }
+
+    to {
+      height: calc(var(--header) - 60px);
+      background-color: var(--color-bg-main);
+      box-shadow: 0 4px 16px rgb(0 0 0 / 8%);
     }
   }
 </style>
