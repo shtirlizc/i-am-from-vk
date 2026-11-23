@@ -28,6 +28,23 @@ import Container from "../components/container.astro";
       <Map />
     </div>
   </Container>
+
+  <div
+    id="routes-popover"
+    class="routes__popover"
+    popover="manual"
+    role="dialog"
+    aria-labelledby="routes-popover-title"
+    tabindex="-1"
+  >
+    <h3 id="routes-popover-title">Lorem ipsum</h3>
+    <p>
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+      tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+      veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+      commodo consequat.
+    </p>
+  </div>
 </section>
 
 <style>
@@ -72,7 +89,8 @@ import Container from "../components/container.astro";
         }
 
         &:hover,
-        &:focus-visible {
+        &:focus-visible,
+        &[aria-expanded="true"] {
           & :global(.route-marker__icon) {
             fill: var(--color-primary);
             fill-opacity: 1;
@@ -80,30 +98,177 @@ import Container from "../components/container.astro";
         }
       }
     }
+
+    & .routes__popover {
+      position: fixed;
+      inset: auto;
+      box-sizing: border-box;
+      width: 340px;
+      max-width: calc(100vw - var(--space32));
+      margin: 0;
+      padding: var(--space24);
+      border: none;
+      border-radius: var(--border-radius16);
+      background: var(--color-white);
+      color: var(--color-text-primary);
+      box-shadow: 0 8px 32px #00000026;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: left;
+      overflow: auto;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition:
+        opacity var(--transition) ease,
+        transform var(--transition) ease,
+        overlay var(--transition) allow-discrete,
+        display var(--transition) allow-discrete;
+
+      &:popover-open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+
+        @starting-style {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      & h3 {
+        margin: 0 0 var(--space12);
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      & p {
+        margin: 0;
+      }
+    }
   }
 </style>
 
 <script>
-  document
-    .querySelectorAll<SVGGElement>("#routes .route-marker")
-    .forEach((marker) => {
-      const activateMarker = () => console.log(marker.id);
+  const popover = document.querySelector<HTMLElement>("#routes-popover");
 
-      marker.addEventListener("click", activateMarker);
+  if (popover) {
+    let activeMarker: SVGGElement | null = null;
 
-      marker.addEventListener("keydown", (event) => {
-        if (event.key !== "Enter" && event.key !== " ") return;
+    const positionPopover = () => {
+      if (!activeMarker) return;
 
-        event.preventDefault();
+      const padding = 16;
+      const gap = 16;
+      const bounds = activeMarker.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth;
+      const viewportHeight = window.innerHeight;
 
-        if (event.key === "Enter" && !event.repeat) activateMarker();
-      });
+      if (
+        bounds.bottom <= padding ||
+        bounds.top >= viewportHeight - padding ||
+        bounds.right <= padding ||
+        bounds.left >= viewportWidth - padding
+      ) {
+        popover.hidePopover();
+        return;
+      }
 
-      marker.addEventListener("keyup", (event) => {
-        if (event.key !== " ") return;
+      // Keep the bottom aligned with the marker on either side.
+      const bottom = Math.min(bounds.bottom, viewportHeight - padding);
+      popover.style.bottom = `${viewportHeight - bottom}px`;
+      popover.style.maxHeight = `${bottom - padding}px`;
 
-        event.preventDefault();
-        activateMarker();
-      });
+      const width = popover.offsetWidth;
+      const right = bounds.right + gap;
+      const left =
+        right + width <= viewportWidth - padding
+          ? right
+          : bounds.left - gap - width;
+
+      popover.style.left = `${Math.max(padding, Math.min(left, viewportWidth - width - padding))}px`;
+    };
+
+    popover.addEventListener("beforetoggle", (event) => {
+      if (event.newState !== "closed") return;
+
+      activeMarker?.setAttribute("aria-expanded", "false");
+      activeMarker = null;
+      window.removeEventListener("scroll", positionPopover, true);
+      window.removeEventListener("resize", positionPopover);
     });
+
+    document
+      .querySelectorAll<SVGGElement>("#routes .route-marker")
+      .forEach((marker) => {
+        marker.setAttribute("aria-controls", popover.id);
+        marker.setAttribute("aria-haspopup", "dialog");
+        marker.setAttribute("aria-expanded", "false");
+
+        const activateMarker = (fromKeyboard = false) => {
+          console.log(marker.id);
+
+          if (activeMarker === marker) {
+            popover.hidePopover();
+            return;
+          }
+
+          activeMarker?.setAttribute("aria-expanded", "false");
+          activeMarker = marker;
+          marker.setAttribute("aria-expanded", "true");
+          popover.showPopover();
+          positionPopover();
+          if (!popover.matches(":popover-open")) return;
+
+          window.addEventListener("scroll", positionPopover, {
+            capture: true,
+            passive: true,
+          });
+          window.addEventListener("resize", positionPopover);
+
+          if (fromKeyboard) {
+            popover.focus({ preventScroll: true });
+          }
+        };
+
+        marker.addEventListener("click", () => activateMarker());
+
+        marker.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+
+          event.preventDefault();
+
+          if (event.key === "Enter" && !event.repeat) activateMarker(true);
+        });
+
+        marker.addEventListener("keyup", (event) => {
+          if (event.key !== " ") return;
+
+          event.preventDefault();
+          activateMarker(true);
+        });
+      });
+
+    // Manual dismissal lets a repeated marker click close without reopening.
+    document.addEventListener("click", (event) => {
+      if (!activeMarker || !(event.target instanceof Element)) return;
+      if (
+        popover.contains(event.target) ||
+        event.target.closest("#routes .route-marker")
+      ) {
+        return;
+      }
+
+      popover.hidePopover();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !activeMarker) return;
+
+      event.preventDefault();
+      const marker = activeMarker;
+      popover.hidePopover();
+      marker.focus({ preventScroll: true });
+    });
+  }
 </script>
