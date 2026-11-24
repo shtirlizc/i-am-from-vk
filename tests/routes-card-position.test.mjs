@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
-  getPopoverArea,
-  getPopoverPosition,
-} from "../src/components/routes-popover-position.ts";
+  getCardArea,
+  getCardPosition,
+} from "../src/components/routes-card-position.ts";
 
-const viewport = { left: 0, top: 0, right: 1440, bottom: 900 };
+const viewportWidth = 1440;
 const rect = (left, top, width, height) => ({
   left,
   top,
@@ -13,25 +13,38 @@ const rect = (left, top, width, height) => ({
   bottom: top + height,
 });
 
-test("usable area stays inside both the map and the viewport with a 16px inset", () => {
-  assert.deepEqual(
-    getPopoverArea(rect(-100, -200, 900, 700), rect(0, 0, 600, 400)),
-    { left: 16, top: 16, right: 584, bottom: 384, width: 568, height: 368 },
-  );
-  assert.deepEqual(getPopoverArea(rect(200, 100, 800, 600), viewport), {
-    left: 216,
-    top: 116,
-    right: 984,
+test("usable area uses local map coordinates and respects horizontal screen clipping", () => {
+  assert.deepEqual(getCardArea(rect(-100, -200, 900, 700), 600), {
+    left: 116,
+    top: 16,
+    right: 684,
     bottom: 684,
+    width: 568,
+    height: 668,
+  });
+  assert.deepEqual(getCardArea(rect(200, 100, 800, 600), viewportWidth), {
+    left: 16,
+    top: 16,
+    right: 784,
+    bottom: 584,
     width: 768,
     height: 568,
   });
 });
 
-test("no area is available when the map is offscreen or smaller than its insets", () => {
-  assert.equal(getPopoverArea(rect(1500, 0, 500, 500), viewport), null);
-  assert.equal(getPopoverArea(rect(0, -500, 500, 400), viewport), null);
-  assert.equal(getPopoverArea(rect(0, 0, 32, 100), viewport), null);
+test("no area is available when the map is horizontally outside the screen or too small", () => {
+  assert.equal(getCardArea(rect(1500, 0, 500, 500), viewportWidth), null);
+  assert.equal(getCardArea(rect(0, 0, 32, 100), viewportWidth), null);
+});
+
+test("vertical page scrolling does not change the card's available area", () => {
+  const area = getCardArea(rect(100, 100, 1160, 587), viewportWidth);
+  for (const top of [-900, -16, 0, 900, 2000]) {
+    assert.deepEqual(
+      getCardArea(rect(100, top, 1160, 587), viewportWidth),
+      area,
+    );
+  }
 });
 
 for (const { name, map, marker, side } of [
@@ -67,8 +80,8 @@ for (const { name, map, marker, side } of [
   },
 ]) {
   test(name, () => {
-    const area = getPopoverArea(map, viewport);
-    const position = getPopoverPosition(marker, area, {
+    const area = getCardArea(map, viewportWidth);
+    const position = getCardPosition(marker, area, {
       width: 340,
       height: 240,
     });
@@ -80,9 +93,9 @@ for (const { name, map, marker, side } of [
   });
 }
 
-test("cards constrained to small visible map fragments remain fully inside", () => {
-  const area = getPopoverArea(rect(0, 0, 320, 80), viewport);
-  const position = getPopoverPosition(rect(150, 30, 28, 28), area, {
+test("cards constrained to small maps remain fully inside", () => {
+  const area = getCardArea(rect(0, 0, 320, 80), viewportWidth);
+  const position = getCardPosition(rect(150, 30, 28, 28), area, {
     width: area.width,
     height: area.height,
   });
@@ -105,7 +118,7 @@ test("all placements stay contained for varied map sizes, markers and card sizes
       64 + random() * 1100,
       64 + random() * 700,
     );
-    const area = getPopoverArea(map, viewport);
+    const area = getCardArea(map, viewportWidth);
     if (!area) continue;
 
     checked++;
@@ -114,12 +127,12 @@ test("all placements stay contained for varied map sizes, markers and card sizes
       height: Math.min(60 + random() * 500, area.height),
     };
     const marker = rect(
-      map.left + random() * (map.right - map.left - 28),
-      map.top + random() * (map.bottom - map.top - 28),
+      random() * (map.right - map.left - 28),
+      random() * (map.bottom - map.top - 28),
       28,
       28,
     );
-    const position = getPopoverPosition(marker, area, size);
+    const position = getCardPosition(marker, area, size);
     assert.ok(position.left >= area.left);
     assert.ok(position.top >= area.top);
     assert.ok(position.left + size.width <= area.right);

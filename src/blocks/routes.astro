@@ -4,7 +4,9 @@ import Title from "../components/title.astro";
 import Description from "./description.astro";
 import Map from "../assets/svg/map.svg";
 import Container from "../components/container.astro";
-import RoutesPopover from "../components/routes-popover.astro";
+import RoutesCard from "../components/routes-card.astro";
+import PrevPointIcon from "../assets/svg/prev.svg";
+import NextPointIcon from "../assets/svg/next.svg";
 
 import pinDecoration from "../assets/images/routes/routes-img2.webp";
 import starDecoration from "../assets/images/routes/routes-img1.webp";
@@ -29,13 +31,33 @@ import starDecoration from "../assets/images/routes/routes-img1.webp";
   </div>
 
   <Container>
+    <div class="routes__nav">
+      <button
+        type="button"
+        data-route-prev
+        aria-label="Предыдущая точка"
+        aria-controls="routes-card"
+      >
+        <PrevPointIcon aria-hidden="true" focusable="false" />
+      </button>
+      <button
+        type="button"
+        data-route-next
+        aria-label="Следующая точка"
+        aria-controls="routes-card"
+      >
+        <NextPointIcon aria-hidden="true" focusable="false" />
+      </button>
+    </div>
+
     <div class="routes__map">
       <Image class="routes__decoration-left" src={pinDecoration} alt="" />
       <Image class="routes__decoration-right" src={starDecoration} alt="" />
       <div class="routes__body">
         <Map />
       </div>
-      <RoutesPopover />
+
+      <RoutesCard />
     </div>
   </Container>
 </section>
@@ -55,9 +77,42 @@ import starDecoration from "../assets/images/routes/routes-img1.webp";
       margin-inline: auto;
     }
 
+    & .routes__nav {
+      position: relative;
+      margin-top: var(--space32);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+
+      button {
+        border: none;
+        padding: 0;
+        background: none;
+        cursor: pointer;
+        border-radius: 50%;
+        font-size: 0;
+
+        & :global(circle),
+        & :global(path) {
+          transition: fill var(--transition);
+        }
+
+        &:hover,
+        &:focus-visible {
+          & :global(circle) {
+            fill: var(--color-primary);
+          }
+
+          & :global(path) {
+            fill: var(--color-white);
+          }
+        }
+      }
+    }
+
     & .routes__map {
       position: relative;
-      margin-top: 64px;
+      margin-top: var(--space12);
     }
 
     & .routes__decoration-left,
@@ -119,7 +174,7 @@ import starDecoration from "../assets/images/routes/routes-img1.webp";
 
         &:hover,
         &:focus-visible,
-        &[aria-expanded="true"] {
+        &[aria-pressed="true"] {
           & :global(.route-marker__icon) {
             fill: var(--color-primary);
             fill-opacity: 1;

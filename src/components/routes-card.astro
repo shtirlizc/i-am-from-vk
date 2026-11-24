@@ -1,0 +1,295 @@
+---
+import { points } from "../content/routes.ts";
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<div class="routes-card">
+  <article
+    id="routes-card"
+    class="routes__card"
+    aria-labelledby="routes-card-title"
+    aria-live="polite"
+    aria-atomic="true"
+    tabindex="-1"
+  />
+
+  {points.map((point) => (
+    <template data-point-id={point.id}>
+      <div class="point-card">
+        <div class="point-card__head">
+          <div class="point-card__img">
+            <img
+              src={`${baseUrl}${point.author.image}`}
+              width={66}
+              height={66}
+              loading="lazy"
+              decoding="async"
+              alt=""
+            />
+          </div>
+          <div>
+            <h4 id="routes-card-title">{point.author.name}</h4>
+            <p>{point.author.city}</p>
+          </div>
+        </div>
+        <div class="point-card__body" set:html={point.message} />
+        {point.links && point.links.length > 0 && (
+          <ul class="point-card__foot">
+            {point.links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </template>
+  ))}
+</div>
+
+<style>
+  .routes-card {
+    display: contents;
+
+    & .routes__card {
+      position: absolute;
+      z-index: 1;
+      top: var(--space16);
+      left: var(--space16);
+      box-sizing: border-box;
+      width: 340px;
+      max-width: calc(100% - var(--space32));
+      margin: 0;
+      padding: min(var(--space24), var(--card-padding-limit, var(--space24)));
+      border: none;
+      border-radius: var(--border-radius16);
+      background: var(--color-white);
+      color: var(--color-text-primary);
+      box-shadow: 0 8px 32px #00000026;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: left;
+      overflow: auto;
+
+      &:empty {
+        display: none;
+      }
+
+      & .point-card {
+        & .point-card__head {
+          display: flex;
+          gap: 10px;
+
+          h4 {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 100%;
+            color: #3d4146;
+          }
+
+          p {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 100%;
+            color: #838a92;
+            margin-top: 6px;
+          }
+        }
+
+        & .point-card__img {
+          flex: 66px 0 0;
+          width: 66px;
+          height: 66px;
+          border-radius: 50%;
+          overflow: hidden;
+
+          & img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        & .point-card__body {
+          margin-top: var(--space24);
+
+          & :global(p) {
+            font-weight: 500;
+            font-size: 21px;
+            line-height: 100%;
+          }
+        }
+
+        & .point-card__foot {
+          margin: var(--space40) 0 0;
+          padding: 0;
+          list-style: none;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+
+          a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            color: #222222;
+            padding: 0 13px;
+            height: 28px;
+            line-height: 28px;
+            background-color: var(--color-bg-main);
+            border-radius: 5px;
+            transition:
+              color var(--transition),
+              background-color var(--transition);
+
+            &:hover {
+              background-color: var(--color-primary);
+              color: var(--color-white);
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  import { getCardArea, getCardPosition } from "./routes-card-position";
+
+  const card = document.querySelector<HTMLElement>("#routes-card");
+  const map = card?.closest<HTMLElement>(".routes__map");
+  const routes = map?.closest<HTMLElement>("#routes");
+
+  if (card && map && routes) {
+    const markers = new Map(
+      Array.from(
+        map.querySelectorAll<SVGGElement>(".route-marker"),
+        (marker) => [marker.id, marker],
+      ),
+    );
+    const routePoints = Array.from(
+      routes.querySelectorAll<HTMLTemplateElement>("template[data-point-id]"),
+    ).flatMap((template) => {
+      const marker = markers.get(template.dataset.pointId ?? "");
+      return marker ? [{ marker, template }] : [];
+    });
+    let activeIndex = -1;
+    let changeAnimation: Animation | null = null;
+
+    const positionCard = () => {
+      const activePoint = routePoints[activeIndex];
+      if (!activePoint) return;
+
+      const mapBounds = map.getBoundingClientRect();
+      const area = getCardArea(mapBounds, document.documentElement.clientWidth);
+      if (!area) return;
+
+      card.style.maxWidth = `${area.width}px`;
+      card.style.maxHeight = `${area.height}px`;
+      card.style.setProperty(
+        "--card-padding-limit",
+        `${Math.min(area.width, area.height) / 4}px`,
+      );
+
+      const bounds = activePoint.marker.getBoundingClientRect();
+      const style = getComputedStyle(card);
+      const position = getCardPosition(
+        {
+          left: bounds.left - mapBounds.left,
+          top: bounds.top - mapBounds.top,
+          right: bounds.right - mapBounds.left,
+          bottom: bounds.bottom - mapBounds.top,
+        },
+        area,
+        {
+          width: Number.parseFloat(style.width),
+          height: Number.parseFloat(style.height),
+        },
+      );
+      card.style.left = `${position.left}px`;
+      card.style.top = `${position.top}px`;
+    };
+
+    const animateChange = () => {
+      changeAnimation?.cancel();
+      const duration = getComputedStyle(card)
+        .getPropertyValue("--transition")
+        .trim();
+      changeAnimation = card.animate(
+        [
+          { opacity: 0, transform: "scale(0.98)" },
+          { opacity: 1, transform: "scale(1)" },
+        ],
+        {
+          duration:
+            Number.parseFloat(duration) * (duration.endsWith("ms") ? 1 : 1000),
+          easing: "ease",
+        },
+      );
+    };
+
+    const selectPoint = (index: number, fromKeyboard = false) => {
+      const point = routePoints[index];
+      if (!point) return;
+
+      const changed = index !== activeIndex;
+      if (changed) {
+        routePoints[activeIndex]?.marker.setAttribute("aria-pressed", "false");
+        activeIndex = index;
+        point.marker.setAttribute("aria-pressed", "true");
+        card.replaceChildren(point.template.content.cloneNode(true));
+        card.scrollTop = 0;
+      }
+
+      positionCard();
+      if (changed) animateChange();
+      if (fromKeyboard) card.focus({ preventScroll: true });
+    };
+
+    routePoints.forEach(({ marker }, index) => {
+      marker.setAttribute("aria-controls", card.id);
+      marker.setAttribute("aria-pressed", "false");
+      marker.addEventListener("click", () => selectPoint(index));
+      marker.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        if (event.key === "Enter" && !event.repeat) selectPoint(index, true);
+      });
+      marker.addEventListener("keyup", (event) => {
+        if (event.key !== " ") return;
+        event.preventDefault();
+        selectPoint(index, true);
+      });
+    });
+
+    const navigatePoint = (direction: number) => {
+      if (routePoints.length === 0) return;
+      selectPoint(
+        (activeIndex + direction + routePoints.length) % routePoints.length,
+      );
+    };
+    const previousButton =
+      routes.querySelector<HTMLButtonElement>("[data-route-prev]");
+    const nextButton =
+      routes.querySelector<HTMLButtonElement>("[data-route-next]");
+    if (previousButton) {
+      previousButton.disabled = routePoints.length < 2;
+      previousButton.addEventListener("click", () => navigatePoint(-1));
+    }
+    if (nextButton) {
+      nextButton.disabled = routePoints.length < 2;
+      nextButton.addEventListener("click", () => navigatePoint(1));
+    }
+
+    window.addEventListener("resize", positionCard);
+    const resizeObserver = new ResizeObserver(positionCard);
+    resizeObserver.observe(map);
+    resizeObserver.observe(card);
+    selectPoint(0);
+  }
+</script>

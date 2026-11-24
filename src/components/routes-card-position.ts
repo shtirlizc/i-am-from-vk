@@ -21,15 +21,18 @@ interface Position {
   side: "right" | "left" | "top" | "bottom" | "overlap";
 }
 
-export function getPopoverArea(
+export function getCardArea(
   map: Rect,
-  viewport: Rect,
+  viewportWidth: number,
   padding = 16,
 ): Area | null {
-  const left = Math.ceil(Math.max(map.left, viewport.left) + padding);
-  const top = Math.ceil(Math.max(map.top, viewport.top) + padding);
-  const right = Math.floor(Math.min(map.right, viewport.right) - padding);
-  const bottom = Math.floor(Math.min(map.bottom, viewport.bottom) - padding);
+  // Coordinates are local to the map; only horizontal clipping matters.
+  const left = Math.ceil(Math.max(0, -map.left) + padding);
+  const top = padding;
+  const right = Math.floor(
+    Math.min(map.right, viewportWidth) - map.left - padding,
+  );
+  const bottom = Math.floor(map.bottom - map.top - padding);
 
   if (right <= left || bottom <= top) return null;
 
@@ -43,7 +46,7 @@ export function getPopoverArea(
   };
 }
 
-export function getPopoverPosition(
+export function getCardPosition(
   marker: Rect,
   area: Area,
   size: Size,
