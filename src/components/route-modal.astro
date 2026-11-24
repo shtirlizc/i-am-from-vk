@@ -3,6 +3,7 @@ import { Image } from "astro:assets";
 import { render, type CollectionEntry } from "astro:content";
 import PrevPointIcon from "../assets/svg/prev.svg";
 import NextPointIcon from "../assets/svg/next.svg";
+import CloseIcon from "../assets/svg/close.svg";
 
 interface Props {
   routes: CollectionEntry<"routes">[];
@@ -38,20 +39,7 @@ const entries = await Promise.all(
       aria-label="Закрыть маршрут"
       autofocus
     >
-      <svg
-        width="24"
-        height="24"
-        viewBox="0 0 24 24"
-        fill="none"
-        aria-hidden="true"
-      >
-        <path
-          d="m6 6 12 12M18 6 6 18"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-        />
-      </svg>
+      <CloseIcon aria-hidden="true" focusable="false" />
     </button>
     <div class="route-modal__scroll">
       <div id="route-dialog-content" data-route-modal-content />
@@ -77,8 +65,8 @@ const entries = await Promise.all(
           {route.data.image ? (
             <Image
               src={route.data.image}
-              width={96}
-              height={96}
+              width={66}
+              height={66}
               alt=""
               loading="lazy"
             />
@@ -90,8 +78,9 @@ const entries = await Promise.all(
           )}
         </div>
         <div>
-          <p class="route-modal__name">{route.data.name}</p>
-          <p class="route-modal__position">{route.data.position}</p>
+          <p class="route-modal__name">
+            {route.data.name}, {route.data.position}
+          </p>
         </div>
       </aside>
       <article class="route-modal__article">
@@ -264,13 +253,26 @@ const entries = await Promise.all(
     padding: 0;
     border: 0;
     border-radius: 50%;
-    background-color: var(--color-bg-main);
+    background: none;
     color: var(--color-text-primary);
     cursor: pointer;
     transition: background-color var(--transition);
 
-    &:hover {
-      background-color: #e5e7eb;
+    svg {
+      transform: translateY(2px);
+    }
+
+    & :global(path) {
+      transition: fill var(--transition);
+    }
+
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-primary);
+
+      & :global(path) {
+        fill: var(--color-white);
+      }
     }
 
     &:focus-visible {
@@ -284,14 +286,8 @@ const entries = await Promise.all(
     overflow: auto;
     overscroll-behavior: contain;
     scrollbar-gutter: stable;
-    padding: var(--space24);
+    padding: var(--space24) var(--space48) 102px var(--space24);
     padding-block-start: 72px;
-
-    /* tablet */
-    @media (width >= 768px) {
-      padding: var(--space48);
-      padding-block-start: 72px;
-    }
   }
 
   .route-modal__layout {
@@ -300,42 +296,33 @@ const entries = await Promise.all(
 
     /* tablet */
     @media (width >= 768px) {
-      grid-template-columns: 200px minmax(0, 1fr);
+      grid-template-columns: 234px minmax(0, 1fr);
     }
   }
 
   .route-modal__author {
+    position: sticky;
+    top: 0;
     display: flex;
-    align-items: center;
-    gap: var(--space16);
+    align-items: flex-start;
+    align-self: start;
+    gap: 10px;
     min-width: 0;
-
-    /* tablet */
-    @media (width >= 768px) {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
 
   .route-modal__avatar {
     display: grid;
     place-items: center;
-    flex-shrink: 0;
+    flex: 66px 0 0;
     width: 66px;
     height: 66px;
     overflow: hidden;
     border-radius: 50%;
-    background-color: var(--color-bg-main);
+    background-color: #e6f1ff;
     color: var(--color-primary);
-    font-size: 24px;
-    font-weight: 600;
-
-    /* tablet */
-    @media (width >= 768px) {
-      width: 96px;
-      height: 96px;
-      font-size: 32px;
-    }
+    font-weight: 700;
+    font-size: 23px;
+    line-height: 66px;
 
     & img {
       display: block;
@@ -346,17 +333,10 @@ const entries = await Promise.all(
   }
 
   .route-modal__name {
-    font-size: 18px;
+    font-size: 13px;
     font-weight: 600;
-    line-height: 1.3;
-    overflow-wrap: anywhere;
-  }
-
-  .route-modal__position {
-    margin-top: var(--space8);
-    color: var(--color-text-secondary);
-    font-size: 14px;
-    line-height: 1.5;
+    line-height: 100%;
+    color: #3d4146;
     overflow-wrap: anywhere;
   }
 
@@ -365,15 +345,11 @@ const entries = await Promise.all(
   }
 
   .route-modal__title {
-    font-size: 28px;
     font-weight: 600;
-    line-height: 1.15;
+    font-size: 32px;
+    line-height: 100%;
     overflow-wrap: anywhere;
-
-    /* tablet */
-    @media (width >= 768px) {
-      font-size: 36px;
-    }
+    color: var(--color-text-secondary);
   }
 </style>
 

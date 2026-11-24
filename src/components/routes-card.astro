@@ -73,12 +73,12 @@ const points = groupRoutesByCity(await getCollection("routes"));
       width: 340px;
       max-width: calc(100% - var(--space32));
       margin: 0;
-      padding: min(var(--space24), var(--card-padding-limit, var(--space24)));
+      padding: var(--space24);
       border: none;
       border-radius: var(--border-radius16);
       background: var(--color-white);
       color: var(--color-text-primary);
-      box-shadow: 0 8px 32px #00000026;
+      box-shadow: 0 4px 24px 0 #0000001f;
       font-size: 16px;
       line-height: 1.5;
       text-align: left;
@@ -117,10 +117,11 @@ const points = groupRoutesByCity(await getCollection("routes"));
           height: 66px;
           border-radius: 50%;
           overflow: hidden;
-          background-color: var(--color-bg-main);
+          background-color: #e6f1ff;
           color: var(--color-primary);
-          font-size: 24px;
-          font-weight: 600;
+          font-weight: 700;
+          font-size: 23px;
+          line-height: 66px;
 
           & img {
             display: block;
@@ -133,13 +134,13 @@ const points = groupRoutesByCity(await getCollection("routes"));
         & .point-card__body {
           margin-top: var(--space24);
 
-          & :global(p) {
+          p {
             font-weight: 500;
             font-size: 21px;
             line-height: 100%;
           }
 
-          & :global(button[data-route-details]) {
+          & button[data-route-details] {
             display: inline;
             padding: 0;
             border: 0;
@@ -147,9 +148,12 @@ const points = groupRoutesByCity(await getCollection("routes"));
             color: var(--color-primary);
             font: inherit;
             text-align: inherit;
-            text-decoration: underline;
-            text-underline-offset: 3px;
             cursor: pointer;
+            text-decoration: underline;
+            text-decoration-style: dotted;
+            text-decoration-thickness: 0;
+            text-decoration-skip-ink: auto;
+            text-underline-offset: 3px;
 
             &:hover {
               text-decoration: none;
@@ -229,11 +233,6 @@ const points = groupRoutesByCity(await getCollection("routes"));
 
       card.style.maxWidth = `${area.width}px`;
       card.style.maxHeight = `${area.height}px`;
-      card.style.setProperty(
-        "--card-padding-limit",
-        `${Math.min(area.width, area.height) / 4}px`,
-      );
-
       const bounds = activePoint.marker.getBoundingClientRect();
       const style = getComputedStyle(card);
       const position = getCardPosition(
