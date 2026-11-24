@@ -1,0 +1,310 @@
+---
+import { points } from "../content/routes.ts";
+
+const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+
+<div class="routes-popover">
+  <div
+    id="routes-popover"
+    class="routes__popover"
+    popover="manual"
+    role="dialog"
+    aria-labelledby="routes-popover-title"
+    tabindex="-1"
+  />
+
+  {points.map((point) => (
+    <template data-point-id={point.id}>
+      <div class="popover">
+        <div class="popover__head">
+          <div class="popover__img">
+            <img
+              src={`${baseUrl}${point.author.image}`}
+              width={66}
+              height={66}
+              loading="lazy"
+              decoding="async"
+              alt=""
+            />
+          </div>
+          <div>
+            <h4 id="routes-popover-title">{point.author.name}</h4>
+            <p>{point.author.city}</p>
+          </div>
+        </div>
+        <div class="popover__body" set:html={point.message} />
+        {point.links && point.links.length > 0 && (
+          <ul class="popover__foot">
+            {point.links.map((link) => (
+              <li>
+                <a href={link.href}>{link.label}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </template>
+  ))}
+</div>
+
+<style>
+  .routes-popover {
+    display: contents;
+
+    & .routes__popover {
+      position: fixed;
+      inset: auto;
+      box-sizing: border-box;
+      width: 340px;
+      max-width: calc(100vw - var(--space32));
+      margin: 0;
+      padding: var(--space24);
+      border: none;
+      border-radius: var(--border-radius16);
+      background: var(--color-white);
+      color: var(--color-text-primary);
+      box-shadow: 0 8px 32px #00000026;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: left;
+      overflow: auto;
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition:
+        opacity var(--transition) ease,
+        transform var(--transition) ease,
+        overlay var(--transition) allow-discrete,
+        display var(--transition) allow-discrete;
+
+      &:popover-open {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+
+        @starting-style {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+      }
+
+      & .popover {
+        & .popover__head {
+          display: flex;
+          gap: 10px;
+
+          h4 {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 100%;
+            color: #3d4146;
+          }
+
+          p {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 100%;
+            color: #838a92;
+            margin-top: 6px;
+          }
+        }
+
+        & .popover__img {
+          flex: 66px 0 0;
+          width: 66px;
+          height: 66px;
+          border-radius: 50%;
+          overflow: hidden;
+
+          & img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+        }
+
+        & .popover__body {
+          margin-top: var(--space24);
+
+          & :global(p) {
+            font-weight: 500;
+            font-size: 21px;
+            line-height: 100%;
+          }
+        }
+
+        & .popover__foot {
+          margin: var(--space40) 0 0;
+          padding: 0;
+          list-style: none;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+
+          a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 500;
+            font-size: 13px;
+            text-align: center;
+            color: #222222;
+            padding: 0 13px;
+            height: 28px;
+            line-height: 28px;
+            background-color: var(--color-bg-main);
+            border-radius: 5px;
+            transition:
+              color var(--transition),
+              background-color var(--transition);
+
+            &:hover {
+              background-color: var(--color-primary);
+              color: var(--color-white);
+            }
+          }
+        }
+      }
+    }
+  }
+</style>
+
+<script>
+  const popover = document.querySelector<HTMLElement>("#routes-popover");
+
+  if (popover) {
+    let activeMarker: SVGGElement | null = null;
+    const pointTemplates = new Map(
+      Array.from(
+        document.querySelectorAll<HTMLTemplateElement>(
+          "#routes template[data-point-id]",
+        ),
+        (template) => [template.dataset.pointId, template],
+      ),
+    );
+
+    const positionPopover = () => {
+      if (!activeMarker) return;
+
+      const padding = 16;
+      const gap = 16;
+      const bounds = activeMarker.getBoundingClientRect();
+      const viewportWidth = document.documentElement.clientWidth;
+      const viewportHeight = window.innerHeight;
+
+      if (
+        bounds.bottom <= padding ||
+        bounds.top >= viewportHeight - padding ||
+        bounds.right <= padding ||
+        bounds.left >= viewportWidth - padding
+      ) {
+        popover.hidePopover();
+        return;
+      }
+
+      // Keep the bottom aligned with the marker on either side.
+      const bottom = Math.min(bounds.bottom, viewportHeight - padding);
+      popover.style.bottom = `${viewportHeight - bottom}px`;
+      popover.style.maxHeight = `${bottom - padding}px`;
+
+      const width = popover.offsetWidth;
+      const right = bounds.right + gap;
+      const left =
+        right + width <= viewportWidth - padding
+          ? right
+          : bounds.left - gap - width;
+
+      popover.style.left = `${Math.max(padding, Math.min(left, viewportWidth - width - padding))}px`;
+    };
+
+    popover.addEventListener("beforetoggle", (event) => {
+      if (event.newState !== "closed") return;
+
+      activeMarker?.setAttribute("aria-expanded", "false");
+      activeMarker = null;
+      window.removeEventListener("scroll", positionPopover, true);
+      window.removeEventListener("resize", positionPopover);
+    });
+
+    document
+      .querySelectorAll<SVGGElement>("#routes .route-marker")
+      .forEach((marker) => {
+        marker.setAttribute("aria-controls", popover.id);
+        marker.setAttribute("aria-haspopup", "dialog");
+        marker.setAttribute("aria-expanded", "false");
+
+        const activateMarker = (fromKeyboard = false) => {
+          if (activeMarker === marker) {
+            popover.hidePopover();
+            return;
+          }
+
+          const template = pointTemplates.get(marker.id);
+          if (!template) {
+            popover.hidePopover();
+            return;
+          }
+
+          popover.replaceChildren(template.content.cloneNode(true));
+          popover.scrollTop = 0;
+          activeMarker?.setAttribute("aria-expanded", "false");
+          activeMarker = marker;
+          marker.setAttribute("aria-expanded", "true");
+          popover.showPopover();
+          positionPopover();
+          if (!popover.matches(":popover-open")) return;
+
+          window.addEventListener("scroll", positionPopover, {
+            capture: true,
+            passive: true,
+          });
+          window.addEventListener("resize", positionPopover);
+
+          if (fromKeyboard) {
+            popover.focus({ preventScroll: true });
+          }
+        };
+
+        marker.addEventListener("click", () => activateMarker());
+
+        marker.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+
+          event.preventDefault();
+
+          if (event.key === "Enter" && !event.repeat) activateMarker(true);
+        });
+
+        marker.addEventListener("keyup", (event) => {
+          if (event.key !== " ") return;
+
+          event.preventDefault();
+          activateMarker(true);
+        });
+      });
+
+    // Manual dismissal lets a repeated marker click close without reopening.
+    document.addEventListener("click", (event) => {
+      if (!activeMarker || !(event.target instanceof Element)) return;
+      if (
+        popover.contains(event.target) ||
+        event.target.closest("#routes .route-marker")
+      ) {
+        return;
+      }
+
+      popover.hidePopover();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || !activeMarker) return;
+
+      event.preventDefault();
+      const marker = activeMarker;
+      popover.hidePopover();
+      marker.focus({ preventScroll: true });
+    });
+  }
+</script>
