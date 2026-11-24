@@ -36,6 +36,8 @@ const year = new Date().getFullYear();
     margin-top: var(--space32);
 
     & .footer__content {
+      position: relative;
+      z-index: 5;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -44,6 +46,7 @@ const year = new Date().getFullYear();
         font-weight: 600;
         font-size: 13px;
         line-height: 23px;
+        cursor: default;
       }
     }
 
