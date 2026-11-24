@@ -1,11 +1,14 @@
 ---
-name: "Илья Фомин"
-position: "DevOps-инженер, VK Cloud"
-city: "Новосибирск"
+name: "Даниил Кирсанов"
+position: "бэкенд-инженер, разработка VK Видео"
+city: "Санкт-Петербург"
 message: |
   <p>
-  После рабочей недели хочется сменить ритм: погулять у воды,
-  а вечером сходить на <button type="button" data-route-details aria-haspopup="dialog">живой концерт</button>.
+  <button type="button" data-route-details aria-haspopup="dialog">Открыть</button>
   </p>
-tags: ["Музыка", "Набережные", "Вечер"]
+tags: []
 ---
+
+![](./1.webp)
+
+Самый уютный, самый красивый и самый удобный для жизни город.

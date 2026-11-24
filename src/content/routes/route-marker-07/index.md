@@ -1,12 +1,14 @@
 ---
-name: "Никита Лебедев"
-position: "инженер по тестированию, VK Видео"
-city: "Владивосток"
+name: "Владимир Грагерт"
+position: "фронтенд-инженер, разработка VK Музыки"
+city: "Санкт-Петербург"
 message: |
   <p>
-  Берите удобную обувь и отправляйтесь искать
-  <button type="button" data-route-details aria-haspopup="dialog">видовые площадки</button>. После прогулки приятно зайти
-  в кафе и поделиться впечатлениями.
+  <button type="button" data-route-details aria-haspopup="dialog">Открыть</button>
   </p>
-tags: ["Море", "Панорамы", "Кафе"]
+tags: []
 ---
+
+![](./1.webp)
+
+Это лучший город на земле.

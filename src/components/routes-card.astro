@@ -200,10 +200,15 @@ const points = (await getCollection("routes")).sort((a, b) =>
   const routes = map?.closest<HTMLElement>("#routes");
 
   if (card && map && routes) {
+    const markerElements = Array.from(
+      map.querySelectorAll<SVGGElement>(".route-marker"),
+    );
     const markers = new Map(
-      Array.from(
-        map.querySelectorAll<SVGGElement>(".route-marker"),
-        (marker) => [marker.id, marker],
+      markerElements.flatMap((marker) =>
+        (marker.getAttribute("data-route-ids") ?? marker.id)
+          .split(/\s+/)
+          .filter(Boolean)
+          .map((id) => [id, marker] as const),
       ),
     );
     const routePoints = Array.from(
@@ -285,19 +290,26 @@ const points = (await getCollection("routes")).sort((a, b) =>
       if (fromKeyboard) card.focus({ preventScroll: true });
     };
 
-    routePoints.forEach(({ marker }, index) => {
+    markerElements.forEach((marker) => {
+      const index = routePoints.findIndex((point) => point.marker === marker);
+      if (index < 0) return;
+      const selectMarker = (fromKeyboard = false) =>
+        selectPoint(
+          routePoints[activeIndex]?.marker === marker ? activeIndex : index,
+          fromKeyboard,
+        );
       marker.setAttribute("aria-controls", card.id);
       marker.setAttribute("aria-pressed", "false");
-      marker.addEventListener("click", () => selectPoint(index));
+      marker.addEventListener("click", () => selectMarker());
       marker.addEventListener("keydown", (event) => {
         if (event.key !== "Enter" && event.key !== " ") return;
         event.preventDefault();
-        if (event.key === "Enter" && !event.repeat) selectPoint(index, true);
+        if (event.key === "Enter" && !event.repeat) selectMarker(true);
       });
       marker.addEventListener("keyup", (event) => {
         if (event.key !== " ") return;
         event.preventDefault();
-        selectPoint(index, true);
+        selectMarker(true);
       });
     });
 
@@ -310,7 +322,11 @@ const points = (await getCollection("routes")).sort((a, b) =>
 
     document.addEventListener("route:select", (event) => {
       const id = (event as CustomEvent<string>).detail;
-      selectPoint(routePoints.findIndex(({ marker }) => marker.id === id));
+      selectPoint(
+        routePoints.findIndex(
+          ({ template }) => template.dataset.pointId === id,
+        ),
+      );
     });
 
     const previousButton =

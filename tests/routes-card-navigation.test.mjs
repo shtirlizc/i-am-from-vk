@@ -42,6 +42,7 @@ const rect = (left, top, width, height) => ({
 // Run the real component script with only browser layout APIs substituted.
 function createMap({
   entries = points,
+  markerGroups = entries.map((point) => [point.id]),
   offscreen = false,
   reverseMarkers = false,
 } = {}) {
@@ -101,8 +102,9 @@ function createMap({
   const map = new Element("map");
   map.bounds = rect(100, offscreen ? 1200 : 100, 1160, 587);
   map.getBoundingClientRect = () => map.bounds;
-  const markers = entries.map((point, index) => {
-    const marker = new Element(point.id);
+  const markers = markerGroups.map((ids, index) => {
+    const marker = new Element(ids[0]);
+    marker.setAttribute("data-route-ids", ids.join(" "));
     marker.getBoundingClientRect = () =>
       marker.bounds ??
       rect(
@@ -191,6 +193,23 @@ const key = (target, type, value, repeat = false) => {
   target.dispatchEvent(event);
 };
 
+test("the actual SVG assigns every story to exactly one city marker", async () => {
+  const svg = await readFile(
+    new URL("../src/assets/svg/map.svg", import.meta.url),
+    "utf8",
+  );
+  const markerGroups = Array.from(
+    svg.matchAll(
+      /<g\b[^>]*class="route-marker"[^>]*data-route-ids="([^"]+)"[^>]*>/g,
+    ),
+    (match) => match[1].split(/\s+/),
+  );
+  assert.deepEqual(
+    markerGroups.flat().sort(),
+    points.map((point) => point.id).sort(),
+  );
+});
+
 test("the first point is selected and animated without moving keyboard focus", () => {
   const fixture = createMap();
   assert.equal(fixture.card.contentId, points[0].id);
@@ -227,6 +246,41 @@ test("modal selection updates the map and subsequent navigation without moving f
   assert.equal(fixture.document.activeElement, focus);
   fixture.next.click();
   assert.equal(fixture.card.contentId, points[5].id);
+});
+
+test("all stories remain navigable when several share one city marker", () => {
+  const entries = points.slice(0, 3);
+  const fixture = createMap({
+    entries,
+    markerGroups: [[entries[0].id, entries[1].id], [entries[2].id]],
+  });
+  fixture.next.click();
+  assert.equal(fixture.card.contentId, entries[1].id);
+  assert.deepEqual(fixture.selected(), [entries[0].id]);
+  fixture.markers[0].click();
+  assert.equal(fixture.card.contentId, entries[1].id);
+  fixture.next.click();
+  assert.equal(fixture.card.contentId, entries[2].id);
+  assert.deepEqual(fixture.selected(), [entries[2].id]);
+  fixture.markers[0].click();
+  assert.equal(fixture.card.contentId, entries[0].id);
+  fixture.previous.click();
+  assert.equal(fixture.card.contentId, entries[2].id);
+});
+
+test("modal can select another story associated with the same city marker", () => {
+  const entries = points.slice(0, 3);
+  const fixture = createMap({
+    entries,
+    markerGroups: [[entries[0].id, entries[1].id], [entries[2].id]],
+  });
+  fixture.document.dispatchEvent(
+    new CustomEvent("route:select", { detail: entries[1].id }),
+  );
+  assert.equal(fixture.card.contentId, entries[1].id);
+  assert.deepEqual(fixture.selected(), [entries[0].id]);
+  fixture.next.click();
+  assert.equal(fixture.card.contentId, entries[2].id);
 });
 
 test("clicking a marker changes the current point for subsequent navigation", () => {
