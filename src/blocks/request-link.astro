@@ -11,13 +11,15 @@ import Container from "../components/container.astro";
       <Title>Знакомимся друг с другом через наши города</Title>
       <div class="request-link__description">
         <Description>
-          Поделитесь локациями, которые вы любите и которые вас вдохновляют, и
-          помогите коллегам открыть для себя что-то новое и узнать о вас немного
-          больше.
+          Поделитесь локациями, которые вы любите и которые вас вдохновляют,
+          и помогите коллегам открыть для себя что-то новое и узнать
+          о вас немного больше.
         </Description>
       </div>
       <div>
-        <Link href="#">Я в деле</Link>
+        <Link href="#">
+          <span style="font-size: 24px">Я в деле</span>
+        </Link>
       </div>
     </div>
   </Container>
@@ -26,10 +28,12 @@ import Container from "../components/container.astro";
 <style>
   .request-link {
     text-align: center;
+    margin-top: 160px;
+    font-size: 24px;
 
     & .request-link__content {
       display: grid;
-      gap: var(--space32);
+      gap: var(--space36);
     }
 
     & .request-link__description {

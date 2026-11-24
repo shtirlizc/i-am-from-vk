@@ -37,18 +37,9 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
               местах и о том, почему в них стоит побывать.
             </p>
             <div class="instruction__photo">
-              <Image
-                src={photo}
-                width={366}
-                height={289}
-                alt=""
-              />
+              <Image src={photo} width={366} height={289} alt="" />
             </div>
-            <Image
-              class="instruction__photo-left"
-              src={leftPhoto}
-              alt=""
-            />
+            <Image class="instruction__photo-left" src={leftPhoto} alt="" />
           </div>
           <div class="instruction__second-step">
             <p>
@@ -68,6 +59,7 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
 <style>
   .instruction {
     text-align: center;
+    margin-top: 160px;
 
     & .instruction__body,
     & .instruction__content {
@@ -102,9 +94,16 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
     }
 
     & .instruction__content {
+      align-items: center;
+
       /* desktop */
       @media (width >= 960px) {
         gap: var(--space48);
+      }
+
+      & > p:first-child {
+        font-size: 24px;
+        max-width: 760px;
       }
     }
 
@@ -122,7 +121,8 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
       align-items: start;
 
       & > :last-child {
-        margin-block-start: 288px;
+        margin-block-start: 263px;
+        margin-left: 20px;
       }
 
       & .instruction__first-step {
@@ -130,12 +130,17 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
         flex-direction: column;
         position: relative;
         align-self: start;
-        gap: 48px;
+        gap: 30px;
+
+        & > p {
+          width: 370px;
+          font-size: 24px;
+        }
 
         & .instruction__photo {
           position: absolute;
-          inset-block-start: 30px;
-          inset-inline-start: calc(50% + 127px + 24.6px);
+          inset-block-start: 12px;
+          inset-inline-start: calc(50% + 127px + 5px);
         }
 
         & .instruction__photo-left {
@@ -147,15 +152,20 @@ import rightPhoto from "../assets/images/instruction/instruction-img2.webp";
           /* desktop */
           @media (width >= 960px) {
             display: block;
-            inline-size: 721px;
-            inset-block-start: 5px;
-            inset-inline-end: calc(100% - 80px);
+            inline-size: 800px;
+            inset-block-start: -37px;
+            inset-inline-end: calc(100% - 110px);
           }
         }
       }
 
       & .instruction__second-step {
         align-self: end;
+
+        & > p {
+          width: 370px;
+          font-size: 24px;
+        }
       }
     }
   }

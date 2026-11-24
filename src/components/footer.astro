@@ -6,6 +6,7 @@ import Logo from "./logo.astro";
 
 import cityImg from "../assets/images/footer/city.webp";
 import bgImg from "../assets/images/footer/bg.webp";
+import arrowImg from "../assets/images/footer/arrow.webp";
 
 const year = new Date().getFullYear();
 ---
@@ -19,6 +20,10 @@ const year = new Date().getFullYear();
   </Container>
 
   <div class="footer__image">
+    <div class="arrow">
+      <Image src={arrowImg} width={587} height={427} alt="" />
+    </div>
+
     <div class="bg">
       <Image src={bgImg} width={2165} height={497} alt="" />
     </div>
@@ -32,8 +37,7 @@ const year = new Date().getFullYear();
 <style>
   .footer {
     position: relative;
-    overflow: hidden;
-    margin-top: var(--space32);
+    margin-top: 95px;
 
     & .footer__content {
       position: relative;
@@ -47,6 +51,41 @@ const year = new Date().getFullYear();
         font-size: 13px;
         line-height: 23px;
         cursor: default;
+      }
+    }
+
+    & .footer__image {
+      position: relative;
+      margin: -55px 50px 0 0;
+
+      & .arrow {
+        position: absolute;
+        z-index: 2;
+        inline-size: 295px;
+        inset-block-start: -158px;
+        inset-inline-start: calc(50% + 158px);
+
+        & img {
+          display: block;
+          inline-size: 100%;
+          block-size: auto;
+        }
+      }
+
+      /* mobile */
+      @media (width < 560px) {
+        & .arrow {
+          inline-size: 150px;
+          inset-block-start: -125px;
+          inset-inline-start: calc(50% + 55px);
+        }
+      }
+
+      /* tablet */
+      @media (width >= 768px) {
+        & .arrow {
+          inset-inline-start: calc(50% + 158px);
+        }
       }
     }
 

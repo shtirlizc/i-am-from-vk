@@ -28,11 +28,7 @@ import Description from "./description.astro";
           </p>
         </div>
         <div class="intro__description">
-          <Image
-            class="intro__cathedral"
-            src={cathedral}
-            alt=""
-          />
+          <Image class="intro__cathedral" src={cathedral} alt="" />
 
           <Description>
             <p>
@@ -53,7 +49,7 @@ import Description from "./description.astro";
       </div>
       <div class="intro__button">
         <Link href="https://vk.ru" isTargetBlank>
-          Рассказать о любимом месте
+          <span style="font-size: 24px">Рассказать о любимом месте</span>
         </Link>
         <Image class="intro__arrow" src={arrow} alt="" />
         <Image
@@ -76,6 +72,7 @@ import Description from "./description.astro";
       flex-direction: column;
       max-width: var(--content-width);
       margin-inline: auto;
+      margin-top: -33px;
 
       /* desktop */
       @media (width >= 960px) {
@@ -104,12 +101,12 @@ import Description from "./description.astro";
     & .intro__lead {
       font-weight: 600;
       font-size: 32px;
-      line-height: 1;
+      line-height: 1.3;
       color: var(--color-text-secondary);
 
       /* desktop */
       @media (width >= 960px) {
-        gap: var(--space32);
+        gap: 34px;
       }
     }
 
@@ -151,9 +148,9 @@ import Description from "./description.astro";
     & .intro__photo-left {
       /* desktop */
       @media (width >= 960px) {
-        inset-block-start: 24px;
-        inset-inline-end: calc(100% + 191px);
-        inline-size: 206px;
+        inset-block-start: 53px;
+        inset-inline-end: calc(100% + 177px);
+        inline-size: 230px;
       }
     }
 
@@ -169,8 +166,8 @@ import Description from "./description.astro";
     & .intro__photo-right {
       /* desktop */
       @media (width >= 960px) {
-        inset-inline-start: calc(100% + 212px);
-        inset-block-start: -205px;
+        inset-inline-start: calc(100% + 177px);
+        inset-block-start: -200px;
       }
     }
 
