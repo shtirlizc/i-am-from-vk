@@ -1,0 +1,40 @@
+.text-content {
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+
+  & > * {
+    margin-block: var(--space24) 0;
+  }
+
+  & img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--border-radius12);
+  }
+
+  & a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  & ul,
+  & ol {
+    padding-inline-start: var(--space24);
+  }
+
+  & blockquote {
+    margin-inline: 0;
+    padding-inline-start: var(--space16);
+    border-inline-start: 3px solid var(--color-primary);
+  }
+
+  & pre {
+    max-width: 100%;
+    overflow: auto;
+    padding: var(--space16);
+    border-radius: var(--border-radius8);
+  }
+}

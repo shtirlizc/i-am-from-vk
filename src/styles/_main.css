@@ -1,3 +1,5 @@
 @import "./variables.css";
 @import "./scrollbar.css";
 @import "./body.css";
+
+@import "./blocks/_main.css";
