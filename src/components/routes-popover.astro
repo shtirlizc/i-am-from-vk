@@ -59,7 +59,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
       width: 340px;
       max-width: calc(100vw - var(--space32));
       margin: 0;
-      padding: var(--space24);
+      padding: min(
+        var(--space24),
+        var(--popover-padding-limit, var(--space24))
+      );
       border: none;
       border-radius: var(--border-radius16);
       background: var(--color-white);
@@ -70,7 +73,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
       text-align: left;
       overflow: auto;
       opacity: 0;
-      transform: translateY(8px);
+      transform: scale(0.98);
       pointer-events: none;
       transition:
         opacity var(--transition) ease,
@@ -80,12 +83,12 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
 
       &:popover-open {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
         pointer-events: auto;
 
         @starting-style {
           opacity: 0;
-          transform: translateY(8px);
+          transform: scale(0.98);
         }
       }
 
@@ -172,9 +175,15 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
 </style>
 
 <script>
-  const popover = document.querySelector<HTMLElement>("#routes-popover");
+  import {
+    getPopoverArea,
+    getPopoverPosition,
+  } from "./routes-popover-position";
 
-  if (popover) {
+  const popover = document.querySelector<HTMLElement>("#routes-popover");
+  const map = popover?.closest<HTMLElement>(".routes__map");
+
+  if (popover && map) {
     let activeMarker: SVGGElement | null = null;
     const pointTemplates = new Map(
       Array.from(
@@ -188,36 +197,54 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
     const positionPopover = () => {
       if (!activeMarker) return;
 
-      const padding = 16;
-      const gap = 16;
       const bounds = activeMarker.getBoundingClientRect();
-      const viewportWidth = document.documentElement.clientWidth;
-      const viewportHeight = window.innerHeight;
+      const mapBounds = map.getBoundingClientRect();
+      const visualViewport = window.visualViewport;
+      const viewportLeft = visualViewport?.offsetLeft ?? 0;
+      const viewportTop = visualViewport?.offsetTop ?? 0;
+      const viewport = {
+        left: viewportLeft,
+        top: viewportTop,
+        right:
+          viewportLeft +
+          (visualViewport?.width ?? document.documentElement.clientWidth),
+        bottom: viewportTop + (visualViewport?.height ?? window.innerHeight),
+      };
+      const visibleArea = getPopoverArea(mapBounds, viewport, 0);
+      const area = getPopoverArea(mapBounds, viewport);
 
       if (
-        bounds.bottom <= padding ||
-        bounds.top >= viewportHeight - padding ||
-        bounds.right <= padding ||
-        bounds.left >= viewportWidth - padding
+        !visibleArea ||
+        !area ||
+        bounds.bottom <= visibleArea.top ||
+        bounds.top >= visibleArea.bottom ||
+        bounds.right <= visibleArea.left ||
+        bounds.left >= visibleArea.right
       ) {
         popover.hidePopover();
         return;
       }
 
-      // Keep the bottom aligned with the marker on either side.
-      const bottom = Math.min(bounds.bottom, viewportHeight - padding);
-      popover.style.bottom = `${viewportHeight - bottom}px`;
-      popover.style.maxHeight = `${bottom - padding}px`;
+      popover.style.maxWidth = `${area.width}px`;
+      popover.style.maxHeight = `${area.height}px`;
+      // Allow a small visible map fragment to contain even the card's padding.
+      popover.style.setProperty(
+        "--popover-padding-limit",
+        `${Math.min(area.width, area.height) / 4}px`,
+      );
 
-      const width = popover.offsetWidth;
-      const right = bounds.right + gap;
-      const left =
-        right + width <= viewportWidth - padding
-          ? right
-          : bounds.left - gap - width;
+      // Computed dimensions exclude the animated scale of the opening card.
+      const style = getComputedStyle(popover);
+      const position = getPopoverPosition(bounds, area, {
+        width: Number.parseFloat(style.width),
+        height: Number.parseFloat(style.height),
+      });
 
-      popover.style.left = `${Math.max(padding, Math.min(left, viewportWidth - width - padding))}px`;
+      popover.style.left = `${position.left}px`;
+      popover.style.top = `${position.top}px`;
     };
+
+    const resizeObserver = new ResizeObserver(positionPopover);
 
     popover.addEventListener("beforetoggle", (event) => {
       if (event.newState !== "closed") return;
@@ -226,6 +253,9 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
       activeMarker = null;
       window.removeEventListener("scroll", positionPopover, true);
       window.removeEventListener("resize", positionPopover);
+      window.visualViewport?.removeEventListener("resize", positionPopover);
+      window.visualViewport?.removeEventListener("scroll", positionPopover);
+      resizeObserver.disconnect();
     });
 
     document
@@ -261,6 +291,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
             passive: true,
           });
           window.addEventListener("resize", positionPopover);
+          window.visualViewport?.addEventListener("resize", positionPopover);
+          window.visualViewport?.addEventListener("scroll", positionPopover);
+          resizeObserver.observe(map);
+          resizeObserver.observe(popover);
 
           if (fromKeyboard) {
             popover.focus({ preventScroll: true });
