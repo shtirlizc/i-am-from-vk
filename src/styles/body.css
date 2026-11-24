@@ -25,6 +25,11 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: var(--header);
+  scrollbar-gutter: stable;
+
+  &[data-route-modal-open] {
+    overflow: hidden;
+  }
 }
 
 body {

@@ -47,3 +47,9 @@
 @media (width >= 1440px) {
   /* media query rules */
 }
+
+/* Accessibility preference, independent of viewport width: disable modal motion. */
+/* reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  /* media query rules */
+}

@@ -5,7 +5,7 @@ city: "Пермь"
 image: "./avatar.webp"
 message: |
   <p>
-  Отличный вариант, чтобы начать знакомство <a href="#">с Уралом</a>
+  Отличный вариант, чтобы начать знакомство <button type="button" data-route-details aria-haspopup="dialog">с Уралом</button>
   </p>
 tags: ["Выставки", "Творчество", "Искусство"]
 ---

@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
+import RouteModal from "./route-modal.astro";
 
 const points = (await getCollection("routes")).sort((a, b) =>
   a.id.localeCompare(b.id, undefined, { numeric: true }),
@@ -19,7 +20,7 @@ const points = (await getCollection("routes")).sort((a, b) =>
 
   {points.map(({ id, data: point }) => (
     <template data-point-id={id}>
-      <div class="point-card">
+      <div class="point-card" data-route-id={id}>
         <div class="point-card__head">
           <div class="point-card__img" aria-hidden="true">
             {point.image ? (
@@ -57,6 +58,10 @@ const points = (await getCollection("routes")).sort((a, b) =>
     </template>
   ))}
 </div>
+
+{points.map((route) => (
+  <RouteModal route={route} />
+))}
 
 <style>
   .routes-card {
@@ -135,6 +140,29 @@ const points = (await getCollection("routes")).sort((a, b) =>
             font-weight: 500;
             font-size: 21px;
             line-height: 100%;
+          }
+
+          & :global(button[data-route-details]) {
+            display: inline;
+            padding: 0;
+            border: 0;
+            background: none;
+            color: var(--color-primary);
+            font: inherit;
+            text-align: inherit;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+
+            &:hover {
+              text-decoration: none;
+            }
+
+            &:focus-visible {
+              outline: 2px solid currentColor;
+              outline-offset: 3px;
+              border-radius: 2px;
+            }
           }
         }
 

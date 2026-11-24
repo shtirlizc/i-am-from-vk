@@ -1,0 +1,364 @@
+---
+import { Image } from "astro:assets";
+import { render, type CollectionEntry } from "astro:content";
+
+interface Props {
+  route: CollectionEntry<"routes">;
+}
+
+const { route } = Astro.props;
+const { name, position, city, image } = route.data;
+const { Content } = await render(route);
+const titleId = `route-title-${route.id}`;
+---
+
+<dialog
+  id={`route-dialog-${route.id}`}
+  class="route-modal"
+  data-route-modal
+  aria-labelledby={titleId}
+>
+  <div class="route-modal__wrap">
+    <button
+      type="button"
+      class="route-modal__close"
+      data-route-modal-close
+      aria-label="Закрыть маршрут"
+      autofocus
+    >
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        aria-hidden="true"
+      >
+        <path
+          d="m6 6 12 12M18 6 6 18"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+        />
+      </svg>
+    </button>
+    <div class="route-modal__scroll">
+      <div class="route-modal__layout">
+        <aside class="route-modal__author" aria-label="Автор маршрута">
+          <div class="route-modal__avatar" aria-hidden="true">
+            {image ? (
+              <Image src={image} width={96} height={96} alt="" loading="lazy" />
+            ) : (
+              Array.from(name).slice(0, 2).join("").toLocaleUpperCase("ru")
+            )}
+          </div>
+          <div>
+            <p class="route-modal__name">{name}</p>
+            <p class="route-modal__position">{position}</p>
+          </div>
+        </aside>
+        <article class="route-modal__article">
+          <h2 id={titleId} class="route-modal__title">
+            {city}
+          </h2>
+          <div class="route-modal__content">
+            <Content />
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<style>
+  .route-modal {
+    position: fixed;
+    inset: 0;
+    width: min(var(--content-width), calc(100% - var(--space32)));
+    max-width: none;
+    max-height: 90vh;
+    height: fit-content;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    background: transparent;
+    color: var(--color-text-primary);
+    text-align: left;
+    opacity: 0;
+    transform: scale(0.98);
+    transition:
+      opacity var(--transition) var(--timing-func),
+      transform var(--transition) var(--timing-func),
+      overlay var(--transition) var(--timing-func) allow-discrete,
+      display var(--transition) var(--timing-func) allow-discrete;
+
+    /* reduced-motion */
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+
+    &[open] {
+      opacity: 1;
+      transform: scale(1);
+
+      @starting-style {
+        opacity: 0;
+        transform: scale(0.98);
+      }
+    }
+
+    &::backdrop {
+      background-color: rgb(0 0 0 / 50%);
+      backdrop-filter: blur(2px);
+      opacity: 0;
+      transition:
+        opacity var(--transition) var(--timing-func),
+        overlay var(--transition) var(--timing-func) allow-discrete,
+        display var(--transition) var(--timing-func) allow-discrete;
+
+      /* reduced-motion */
+      @media (prefers-reduced-motion: reduce) {
+        transition: none;
+      }
+    }
+
+    &[open]::backdrop {
+      opacity: 1;
+
+      @starting-style {
+        opacity: 0;
+      }
+    }
+  }
+
+  .route-modal__wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--border-radius20);
+    background-color: var(--color-white);
+    box-shadow: 0 24px 80px rgb(0 0 0 / 20%);
+  }
+
+  .route-modal__close {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--space12);
+    inset-inline-end: var(--space12);
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--color-bg-main);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    transition: background-color var(--transition);
+
+    &:hover {
+      background-color: #e5e7eb;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+    }
+  }
+
+  .route-modal__scroll {
+    max-height: min(90vh, calc(100dvh - var(--space32)));
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+    padding: var(--space24);
+    padding-block-start: 72px;
+
+    /* tablet */
+    @media (width >= 768px) {
+      padding: var(--space48);
+      padding-block-start: 72px;
+    }
+  }
+
+  .route-modal__layout {
+    display: grid;
+    gap: var(--space32);
+
+    /* tablet */
+    @media (width >= 768px) {
+      grid-template-columns: 200px minmax(0, 1fr);
+    }
+  }
+
+  .route-modal__author {
+    display: flex;
+    align-items: center;
+    gap: var(--space16);
+    min-width: 0;
+
+    /* tablet */
+    @media (width >= 768px) {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .route-modal__avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 66px;
+    height: 66px;
+    overflow: hidden;
+    border-radius: 50%;
+    background-color: var(--color-bg-main);
+    color: var(--color-primary);
+    font-size: 24px;
+    font-weight: 600;
+
+    /* tablet */
+    @media (width >= 768px) {
+      width: 96px;
+      height: 96px;
+      font-size: 32px;
+    }
+
+    & img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .route-modal__name {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .route-modal__position {
+    margin-top: var(--space8);
+    color: var(--color-text-secondary);
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .route-modal__article {
+    min-width: 0;
+  }
+
+  .route-modal__title {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+
+    /* tablet */
+    @media (width >= 768px) {
+      font-size: 36px;
+    }
+  }
+
+  .route-modal__content {
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+
+    & > :global(*) {
+      margin-block: var(--space24) 0;
+    }
+
+    & :global(img) {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--border-radius12);
+    }
+
+    & :global(a) {
+      color: var(--color-primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    & :global(ul),
+    & :global(ol) {
+      padding-inline-start: var(--space24);
+    }
+
+    & :global(blockquote) {
+      margin-inline: 0;
+      padding-inline-start: var(--space16);
+      border-inline-start: 3px solid var(--color-primary);
+    }
+
+    & :global(pre) {
+      max-width: 100%;
+      overflow: auto;
+      padding: var(--space16);
+      border-radius: var(--border-radius8);
+    }
+  }
+</style>
+
+<script>
+  const dialogs =
+    document.querySelectorAll<HTMLDialogElement>("[data-route-modal]");
+  const root = document.documentElement;
+  let activeDialog: HTMLDialogElement | null = null;
+  let opener: HTMLButtonElement | null = null;
+  let scrollPosition = { top: 0, left: 0 };
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element) || activeDialog) return;
+    const button = event.target.closest<HTMLButtonElement>(
+      "button[data-route-details]",
+    );
+    const point = button?.closest<HTMLElement>(".point-card[data-route-id]");
+    if (!button || !point) return;
+    const dialog = document.getElementById(
+      `route-dialog-${point.dataset.routeId}`,
+    );
+    if (!(dialog instanceof HTMLDialogElement)) return;
+
+    opener = button;
+    activeDialog = dialog;
+    scrollPosition = { top: window.scrollY, left: window.scrollX };
+    root.setAttribute("data-route-modal-open", "");
+    dialog.querySelector<HTMLElement>(".route-modal__scroll")?.scrollTo(0, 0);
+    dialog.showModal();
+  });
+
+  dialogs.forEach((dialog) => {
+    let startedOnBackdrop = false;
+    const isBackdrop = (event: MouseEvent) => event.target === dialog;
+
+    dialog
+      .querySelector("[data-route-modal-close]")
+      ?.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("pointerdown", (event) => {
+      startedOnBackdrop = isBackdrop(event);
+    });
+    dialog.addEventListener("click", (event) => {
+      if (startedOnBackdrop && isBackdrop(event)) dialog.close();
+      startedOnBackdrop = false;
+    });
+
+    dialog.addEventListener("close", async () => {
+      // Keep the page locked until native CSS exit transitions finish.
+      await Promise.allSettled(
+        dialog.getAnimations().map((animation) => animation.finished),
+      );
+      if (activeDialog !== dialog || dialog.open) return;
+      root.removeAttribute("data-route-modal-open");
+      window.scrollTo({ ...scrollPosition, behavior: "instant" });
+      if (opener?.isConnected) opener.focus({ preventScroll: true });
+      opener = null;
+      activeDialog = null;
+    });
+  });
+</script>
