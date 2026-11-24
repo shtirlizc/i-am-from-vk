@@ -1,8 +1,3 @@
-interface Link {
-  href: string;
-  label: string;
-}
-
 interface IPoint {
   id: string;
   author: {
@@ -11,7 +6,7 @@ interface IPoint {
     image: string;
   };
   message: string;
-  links?: Link[];
+  tags?: string[];
 }
 
 export const points: IPoint[] = [
@@ -27,11 +22,7 @@ export const points: IPoint[] = [
       Отличный вариант, чтобы начать знакомство <a href="#">с Уралом</a>
     </p>
     `,
-    links: [
-      { href: "#", label: "Выставки" },
-      { href: "#", label: "Творчество" },
-      { href: "#", label: "Искусство" },
-    ],
+    tags: ["Выставки", "Творчество", "Искусство"],
   },
   {
     id: "route-marker-02",
@@ -46,11 +37,7 @@ export const points: IPoint[] = [
         и оставьте вечер для <a href="#">набережной</a>.
       </p>
     `,
-    links: [
-      { href: "#", label: "Прогулки" },
-      { href: "#", label: "Кофе" },
-      { href: "#", label: "Архитектура" },
-    ],
+    tags: ["Прогулки", "Кофе", "Архитектура"],
   },
   {
     id: "route-marker-03",
@@ -65,11 +52,7 @@ export const points: IPoint[] = [
         и <a href="#">небольшие галереи</a>. Лучше никуда не торопиться.
       </p>
     `,
-    links: [
-      { href: "#", label: "Галереи" },
-      { href: "#", label: "Книги" },
-      { href: "#", label: "Дворы" },
-    ],
+    tags: ["Галереи", "Книги", "Дворы"],
   },
   {
     id: "route-marker-04",
@@ -84,11 +67,7 @@ export const points: IPoint[] = [
         и <a href="#">уличное искусство</a>. Фотоаппарат точно пригодится.
       </p>
     `,
-    links: [
-      { href: "#", label: "Стрит-арт" },
-      { href: "#", label: "Фотография" },
-      { href: "#", label: "Город" },
-    ],
+    tags: ["Стрит-арт", "Фотография", "Город"],
   },
   {
     id: "route-marker-05",
@@ -103,11 +82,7 @@ export const points: IPoint[] = [
         найти <a href="#">уютный парк</a> и устроить пикник с друзьями.
       </p>
     `,
-    links: [
-      { href: "#", label: "Парки" },
-      { href: "#", label: "Пикники" },
-      { href: "#", label: "С друзьями" },
-    ],
+    tags: ["Парки", "Пикники", "С друзьями"],
   },
   {
     id: "route-marker-06",
@@ -122,11 +97,7 @@ export const points: IPoint[] = [
         На <a href="#">закат</a> всегда оставляю побольше времени.
       </p>
     `,
-    links: [
-      { href: "#", label: "Виды" },
-      { href: "#", label: "Закаты" },
-      { href: "#", label: "История" },
-    ],
+    tags: ["Виды", "Закаты", "История"],
   },
   {
     id: "route-marker-07",
@@ -142,11 +113,7 @@ export const points: IPoint[] = [
         в кафе и поделиться впечатлениями.
       </p>
     `,
-    links: [
-      { href: "#", label: "Море" },
-      { href: "#", label: "Панорамы" },
-      { href: "#", label: "Кафе" },
-    ],
+    tags: ["Море", "Панорамы", "Кафе"],
   },
   {
     id: "route-marker-08",
@@ -161,11 +128,7 @@ export const points: IPoint[] = [
         <a href="#">музей</a> и долгий обед без спешки.
       </p>
     `,
-    links: [
-      { href: "#", label: "Музеи" },
-      { href: "#", label: "Архитектура" },
-      { href: "#", label: "Еда" },
-    ],
+    tags: ["Музеи", "Архитектура", "Еда"],
   },
   {
     id: "route-marker-09",
@@ -180,11 +143,7 @@ export const points: IPoint[] = [
         а вечером сходить на <a href="#">живой концерт</a>.
       </p>
     `,
-    links: [
-      { href: "#", label: "Музыка" },
-      { href: "#", label: "Набережные" },
-      { href: "#", label: "Вечер" },
-    ],
+    tags: ["Музыка", "Набережные", "Вечер"],
   },
   {
     id: "route-marker-10",
@@ -200,11 +159,7 @@ export const points: IPoint[] = [
         Остановки на чай обязательны.
       </p>
     `,
-    links: [
-      { href: "#", label: "Природа" },
-      { href: "#", label: "Море" },
-      { href: "#", label: "Отдых" },
-    ],
+    tags: ["Природа", "Море", "Отдых"],
   },
   {
     id: "route-marker-11",
@@ -220,10 +175,6 @@ export const points: IPoint[] = [
         за небольшим сувениром.
       </p>
     `,
-    links: [
-      { href: "#", label: "Ремёсла" },
-      { href: "#", label: "Сувениры" },
-      { href: "#", label: "Прогулки" },
-    ],
+    tags: ["Ремёсла", "Сувениры", "Прогулки"],
   },
 ];

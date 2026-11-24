@@ -34,12 +34,10 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
           </div>
         </div>
         <div class="point-card__body" set:html={point.message} />
-        {point.links && point.links.length > 0 && (
+        {point.tags && point.tags.length > 0 && (
           <ul class="point-card__foot">
-            {point.links.map((link) => (
-              <li>
-                <a href={link.href}>{link.label}</a>
-              </li>
+            {point.tags.map((tag) => (
+              <li>{tag}</li>
             ))}
           </ul>
         )}
@@ -130,7 +128,7 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
           flex-wrap: wrap;
           gap: 6px;
 
-          a {
+          li {
             display: inline-flex;
             justify-content: center;
             align-items: center;
@@ -143,14 +141,6 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
             line-height: 28px;
             background-color: var(--color-bg-main);
             border-radius: 5px;
-            transition:
-              color var(--transition),
-              background-color var(--transition);
-
-            &:hover {
-              background-color: var(--color-primary);
-              color: var(--color-white);
-            }
           }
         }
       }
