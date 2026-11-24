@@ -1,11 +1,19 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 import { runInNewContext } from "node:vm";
 import { build } from "esbuild";
-import { points } from "../src/content/routes.ts";
+
+const points = (
+  await readdir(new URL("../src/content/routes/", import.meta.url), {
+    withFileTypes: true,
+  })
+)
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => ({ id: entry.name }))
+  .sort((a, b) => a.id.localeCompare(b.id, undefined, { numeric: true }));
 
 const componentPath = fileURLToPath(
   new URL("../src/components/routes-card.astro", import.meta.url),

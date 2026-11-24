@@ -1,7 +1,10 @@
 ---
-import { points } from "../content/routes.ts";
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
 
-const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
+const points = (await getCollection("routes")).sort((a, b) =>
+  a.id.localeCompare(b.id, undefined, { numeric: true }),
+);
 ---
 
 <div class="routes-card">
@@ -14,27 +17,36 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
     tabindex="-1"
   />
 
-  {points.map((point) => (
-    <template data-point-id={point.id}>
+  {points.map(({ id, data: point }) => (
+    <template data-point-id={id}>
       <div class="point-card">
         <div class="point-card__head">
-          <div class="point-card__img">
-            <img
-              src={`${baseUrl}${point.author.image}`}
-              width={66}
-              height={66}
-              loading="lazy"
-              decoding="async"
-              alt=""
-            />
+          <div class="point-card__img" aria-hidden="true">
+            {point.image ? (
+              <Image
+                src={point.image}
+                width={66}
+                height={66}
+                loading="lazy"
+                decoding="async"
+                alt=""
+              />
+            ) : (
+              Array.from(point.name)
+                .slice(0, 2)
+                .join("")
+                .toLocaleUpperCase("ru")
+            )}
           </div>
           <div>
-            <h4 id="routes-card-title">{point.author.name}</h4>
-            <p>{point.author.city}</p>
+            <h4 id="routes-card-title">
+              {point.name}, {point.position}
+            </h4>
+            <p>{point.city}</p>
           </div>
         </div>
         <div class="point-card__body" set:html={point.message} />
-        {point.tags && point.tags.length > 0 && (
+        {point.tags.length > 0 && (
           <ul class="point-card__foot">
             {point.tags.map((tag) => (
               <li>{tag}</li>
@@ -96,11 +108,17 @@ const baseUrl = import.meta.env.BASE_URL.replace(/\/$/, "");
         }
 
         & .point-card__img {
+          display: grid;
+          place-items: center;
           flex: 66px 0 0;
           width: 66px;
           height: 66px;
           border-radius: 50%;
           overflow: hidden;
+          background-color: var(--color-bg-main);
+          color: var(--color-primary);
+          font-size: 24px;
+          font-weight: 600;
 
           & img {
             display: block;
