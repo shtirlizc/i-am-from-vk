@@ -2,10 +2,9 @@
 import { Image } from "astro:assets";
 import { getCollection } from "astro:content";
 import RouteModal from "./route-modal.astro";
+import { groupRoutesByCity } from "../utils/group-routes-by-city";
 
-const points = (await getCollection("routes")).sort((a, b) =>
-  a.id.localeCompare(b.id, undefined, { numeric: true }),
-);
+const points = groupRoutesByCity(await getCollection("routes"));
 ---
 
 <div class="routes-card">
