@@ -1,8 +1,12 @@
 ---
+import { Image } from "astro:assets";
+
 import Title from "../components/title.astro";
 import Description from "./description.astro";
 import Link from "../components/link.astro";
 import Container from "../components/container.astro";
+
+import arrowImg from "../assets/images/request-link/arrow.webp";
 ---
 
 <section class="request-link">
@@ -17,9 +21,12 @@ import Container from "../components/container.astro";
         </Description>
       </div>
       <div>
-        <Link href="#">
-          <span style="font-size: 24px">Я в деле</span>
-        </Link>
+        <span class="request-link__link">
+          <Link href="#">
+            <span style="font-size: 24px">Я в деле</span>
+          </Link>
+          <Image src={arrowImg} width={293} height={213} alt="" />
+        </span>
       </div>
     </div>
   </Container>
@@ -27,9 +34,11 @@ import Container from "../components/container.astro";
 
 <style>
   .request-link {
+    position: relative;
     text-align: center;
     margin-top: 160px;
     font-size: 24px;
+    z-index: 10;
 
     & .request-link__content {
       display: grid;
@@ -39,6 +48,18 @@ import Container from "../components/container.astro";
     & .request-link__description {
       max-width: var(--content-width-sm);
       margin-inline: auto;
+    }
+
+    & .request-link__link {
+      position: relative;
+      display: inline-block;
+
+      img {
+        position: absolute;
+        top: -20px;
+        left: calc(100% + var(--space32));
+        pointer-events: none;
+      }
     }
   }
 </style>
