@@ -216,6 +216,19 @@ test("navigation follows data order even when SVG markers are in a different ord
   assert.equal(card.contentId, points[1].id);
 });
 
+test("modal selection updates the map and subsequent navigation without moving focus", () => {
+  const fixture = createMap();
+  const focus = fixture.document.activeElement;
+  fixture.document.dispatchEvent(
+    new CustomEvent("route:select", { detail: points[4].id }),
+  );
+  assert.equal(fixture.card.contentId, points[4].id);
+  assert.deepEqual(fixture.selected(), [points[4].id]);
+  assert.equal(fixture.document.activeElement, focus);
+  fixture.next.click();
+  assert.equal(fixture.card.contentId, points[5].id);
+});
+
 test("clicking a marker changes the current point for subsequent navigation", () => {
   const fixture = createMap();
   fixture.markers[6].click();

@@ -59,9 +59,7 @@ const points = (await getCollection("routes")).sort((a, b) =>
   ))}
 </div>
 
-{points.map((route) => (
-  <RouteModal route={route} />
-))}
+<RouteModal routes={points} />
 
 <style>
   .routes-card {
@@ -309,6 +307,12 @@ const points = (await getCollection("routes")).sort((a, b) =>
         (activeIndex + direction + routePoints.length) % routePoints.length,
       );
     };
+
+    document.addEventListener("route:select", (event) => {
+      const id = (event as CustomEvent<string>).detail;
+      selectPoint(routePoints.findIndex(({ marker }) => marker.id === id));
+    });
+
     const previousButton =
       routes.querySelector<HTMLButtonElement>("[data-route-prev]");
     const nextButton =

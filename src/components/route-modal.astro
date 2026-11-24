@@ -1,23 +1,35 @@
 ---
 import { Image } from "astro:assets";
 import { render, type CollectionEntry } from "astro:content";
+import PrevPointIcon from "../assets/svg/prev.svg";
+import NextPointIcon from "../assets/svg/next.svg";
 
 interface Props {
-  route: CollectionEntry<"routes">;
+  routes: CollectionEntry<"routes">[];
 }
 
-const { route } = Astro.props;
-const { name, position, city, image } = route.data;
-const { Content } = await render(route);
-const titleId = `route-title-${route.id}`;
+const { routes } = Astro.props;
+const entries = await Promise.all(
+  routes.map(async (route) => ({ route, ...(await render(route)) })),
+);
 ---
 
 <dialog
-  id={`route-dialog-${route.id}`}
+  id="route-dialog"
   class="route-modal"
   data-route-modal
-  aria-labelledby={titleId}
+  aria-labelledby="route-dialog-title"
 >
+  <button
+    type="button"
+    class="route-modal__nav route-modal__nav--prev"
+    data-route-modal-prev
+    aria-label="Предыдущий маршрут"
+    aria-controls="route-dialog-content"
+    disabled={routes.length < 2}
+  >
+    <PrevPointIcon aria-hidden="true" focusable="false" />
+  </button>
   <div class="route-modal__wrap">
     <button
       type="button"
@@ -42,35 +54,66 @@ const titleId = `route-title-${route.id}`;
       </svg>
     </button>
     <div class="route-modal__scroll">
-      <div class="route-modal__layout">
-        <aside class="route-modal__author" aria-label="Автор маршрута">
-          <div class="route-modal__avatar" aria-hidden="true">
-            {image ? (
-              <Image src={image} width={96} height={96} alt="" loading="lazy" />
-            ) : (
-              Array.from(name).slice(0, 2).join("").toLocaleUpperCase("ru")
-            )}
-          </div>
-          <div>
-            <p class="route-modal__name">{name}</p>
-            <p class="route-modal__position">{position}</p>
-          </div>
-        </aside>
-        <article class="route-modal__article">
-          <h2 id={titleId} class="route-modal__title">
-            {city}
-          </h2>
-          <div class="text-content">
-            <Content />
-          </div>
-        </article>
-      </div>
+      <div id="route-dialog-content" data-route-modal-content />
     </div>
   </div>
+  <button
+    type="button"
+    class="route-modal__nav route-modal__nav--next"
+    data-route-modal-next
+    aria-label="Следующий маршрут"
+    aria-controls="route-dialog-content"
+    disabled={routes.length < 2}
+  >
+    <NextPointIcon aria-hidden="true" focusable="false" />
+  </button>
 </dialog>
+
+{entries.map(({ route, Content }) => (
+  <template data-route-modal-id={route.id}>
+    <div class="route-modal__layout">
+      <aside class="route-modal__author" aria-label="Автор маршрута">
+        <div class="route-modal__avatar" aria-hidden="true">
+          {route.data.image ? (
+            <Image
+              src={route.data.image}
+              width={96}
+              height={96}
+              alt=""
+              loading="lazy"
+            />
+          ) : (
+            Array.from(route.data.name)
+              .slice(0, 2)
+              .join("")
+              .toLocaleUpperCase("ru")
+          )}
+        </div>
+        <div>
+          <p class="route-modal__name">{route.data.name}</p>
+          <p class="route-modal__position">{route.data.position}</p>
+        </div>
+      </aside>
+      <article class="route-modal__article">
+        <h2
+          id="route-dialog-title"
+          class="route-modal__title"
+          aria-live="polite"
+        >
+          {route.data.city}
+        </h2>
+        <div class="text-content">
+          <Content />
+        </div>
+      </article>
+    </div>
+  </template>
+))}
 
 <style>
   .route-modal {
+    --modal-duration: 0.3s;
+
     position: fixed;
     inset: 0;
     width: min(var(--content-width), calc(100% - var(--space32)));
@@ -85,12 +128,17 @@ const titleId = `route-title-${route.id}`;
     color: var(--color-text-primary);
     text-align: left;
     opacity: 0;
-    transform: scale(0.98);
+    transform: scale(0.95);
     transition:
-      opacity var(--transition) var(--timing-func),
-      transform var(--transition) var(--timing-func),
-      overlay var(--transition) var(--timing-func) allow-discrete,
-      display var(--transition) var(--timing-func) allow-discrete;
+      opacity var(--modal-duration) var(--timing-func),
+      transform var(--modal-duration) var(--timing-func),
+      overlay var(--modal-duration) var(--timing-func) allow-discrete,
+      display var(--modal-duration) var(--timing-func) allow-discrete;
+
+    /* tablet */
+    @media (width >= 768px) {
+      width: min(var(--content-width), calc(100% - 180px));
+    }
 
     /* reduced-motion */
     @media (prefers-reduced-motion: reduce) {
@@ -103,7 +151,7 @@ const titleId = `route-title-${route.id}`;
 
       @starting-style {
         opacity: 0;
-        transform: scale(0.98);
+        transform: scale(0.95);
       }
     }
 
@@ -112,9 +160,9 @@ const titleId = `route-title-${route.id}`;
       backdrop-filter: blur(2px);
       opacity: 0;
       transition:
-        opacity var(--transition) var(--timing-func),
-        overlay var(--transition) var(--timing-func) allow-discrete,
-        display var(--transition) var(--timing-func) allow-discrete;
+        opacity var(--modal-duration) var(--timing-func),
+        overlay var(--modal-duration) var(--timing-func) allow-discrete,
+        display var(--modal-duration) var(--timing-func) allow-discrete;
 
       /* reduced-motion */
       @media (prefers-reduced-motion: reduce) {
@@ -137,6 +185,71 @@ const titleId = `route-title-${route.id}`;
     border-radius: var(--border-radius20);
     background-color: var(--color-white);
     box-shadow: 0 24px 80px rgb(0 0 0 / 20%);
+  }
+
+  .route-modal__nav {
+    position: absolute;
+    z-index: 1;
+    inset-block-start: var(--space8);
+    width: 58px;
+    height: 58px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    font-size: 0;
+    cursor: pointer;
+
+    /* tablet */
+    @media (width >= 768px) {
+      inset-block-start: 50%;
+      transform: translateY(-50%);
+    }
+
+    & :global(circle),
+    & :global(path) {
+      transition: fill var(--transition);
+    }
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      & :global(circle) {
+        fill: var(--color-primary);
+      }
+
+      & :global(path) {
+        fill: var(--color-white);
+      }
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 3px;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+  }
+
+  .route-modal__nav--prev {
+    inset-inline-start: var(--space12);
+
+    /* tablet */
+    @media (width >= 768px) {
+      inset-inline-start: -74px;
+    }
+  }
+
+  .route-modal__nav--next {
+    inset-inline-start: 82px;
+
+    /* tablet */
+    @media (width >= 768px) {
+      inset-inline-start: auto;
+      inset-inline-end: -74px;
+    }
   }
 
   .route-modal__close {
@@ -265,59 +378,120 @@ const titleId = `route-title-${route.id}`;
 </style>
 
 <script>
-  const dialogs =
-    document.querySelectorAll<HTMLDialogElement>("[data-route-modal]");
-  const root = document.documentElement;
-  let activeDialog: HTMLDialogElement | null = null;
-  let opener: HTMLButtonElement | null = null;
-  let scrollPosition = { top: 0, left: 0 };
+  const dialog =
+    document.querySelector<HTMLDialogElement>("[data-route-modal]");
+  const content = dialog?.querySelector<HTMLElement>(
+    "[data-route-modal-content]",
+  );
+  const scroller = dialog?.querySelector<HTMLElement>(".route-modal__scroll");
+  const templates = Array.from(
+    document.querySelectorAll<HTMLTemplateElement>(
+      "template[data-route-modal-id]",
+    ),
+  );
 
-  document.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element) || activeDialog) return;
-    const button = event.target.closest<HTMLButtonElement>(
-      "button[data-route-details]",
-    );
-    const point = button?.closest<HTMLElement>(".point-card[data-route-id]");
-    if (!button || !point) return;
-    const dialog = document.getElementById(
-      `route-dialog-${point.dataset.routeId}`,
-    );
-    if (!(dialog instanceof HTMLDialogElement)) return;
-
-    opener = button;
-    activeDialog = dialog;
-    scrollPosition = { top: window.scrollY, left: window.scrollX };
-    root.setAttribute("data-route-modal-open", "");
-    dialog.querySelector<HTMLElement>(".route-modal__scroll")?.scrollTo(0, 0);
-    dialog.showModal();
-  });
-
-  dialogs.forEach((dialog) => {
+  if (dialog && content && scroller) {
+    const root = document.documentElement;
+    let activeIndex = -1;
+    let isActive = false;
+    let opener: HTMLButtonElement | null = null;
+    let scrollPosition = { top: 0, left: 0 };
     let startedOnBackdrop = false;
-    const isBackdrop = (event: MouseEvent) => event.target === dialog;
+    let contentAnimation: Animation | null = null;
 
+    const selectRoute = (index: number) => {
+      const template = templates[index];
+      if (!template) return;
+      contentAnimation?.cancel();
+      activeIndex = index;
+      content.replaceChildren(template.content.cloneNode(true));
+      scroller.scrollTo(0, 0);
+      if (
+        dialog.open &&
+        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ) {
+        contentAnimation = content.animate(
+          [
+            {
+              opacity: 0,
+              transform: "scale(0.98)",
+              transformOrigin: "top center",
+            },
+            {
+              opacity: 1,
+              transform: "scale(1)",
+              transformOrigin: "top center",
+            },
+          ],
+          { duration: 200, easing: "ease" },
+        );
+      }
+      document.dispatchEvent(
+        new CustomEvent("route:select", {
+          detail: template.dataset.routeModalId,
+        }),
+      );
+      opener =
+        document.querySelector<HTMLButtonElement>(
+          "#routes-card button[data-route-details]",
+        ) ?? opener;
+    };
+
+    document.addEventListener("click", (event) => {
+      if (!(event.target instanceof Element) || isActive) return;
+      const button = event.target.closest<HTMLButtonElement>(
+        "button[data-route-details]",
+      );
+      const point = button?.closest<HTMLElement>(".point-card[data-route-id]");
+      if (!button || !point) return;
+      const index = templates.findIndex(
+        (template) => template.dataset.routeModalId === point.dataset.routeId,
+      );
+      if (index < 0) return;
+
+      opener = button;
+      scrollPosition = { top: window.scrollY, left: window.scrollX };
+      selectRoute(index);
+      isActive = true;
+      root.setAttribute("data-route-modal-open", "");
+      dialog.showModal();
+    });
+
+    const navigate = (direction: number) => {
+      if (!dialog.open || templates.length < 2) return;
+      selectRoute(
+        (activeIndex + direction + templates.length) % templates.length,
+      );
+    };
+    dialog
+      .querySelector("[data-route-modal-prev]")
+      ?.addEventListener("click", () => navigate(-1));
+    dialog
+      .querySelector("[data-route-modal-next]")
+      ?.addEventListener("click", () => navigate(1));
     dialog
       .querySelector("[data-route-modal-close]")
       ?.addEventListener("click", () => dialog.close());
     dialog.addEventListener("pointerdown", (event) => {
-      startedOnBackdrop = isBackdrop(event);
+      startedOnBackdrop = event.target === dialog;
     });
     dialog.addEventListener("click", (event) => {
-      if (startedOnBackdrop && isBackdrop(event)) dialog.close();
+      if (startedOnBackdrop && event.target === dialog) dialog.close();
       startedOnBackdrop = false;
     });
 
     dialog.addEventListener("close", async () => {
+      contentAnimation?.cancel();
       // Keep the page locked until native CSS exit transitions finish.
       await Promise.allSettled(
         dialog.getAnimations().map((animation) => animation.finished),
       );
-      if (activeDialog !== dialog || dialog.open) return;
+      if (dialog.open) return;
       root.removeAttribute("data-route-modal-open");
       window.scrollTo({ ...scrollPosition, behavior: "instant" });
       if (opener?.isConnected) opener.focus({ preventScroll: true });
       opener = null;
-      activeDialog = null;
+      isActive = false;
     });
-  });
+  }
 </script>
