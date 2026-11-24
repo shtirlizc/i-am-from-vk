@@ -41,6 +41,7 @@ const entries = await Promise.all(
     >
       <CloseIcon aria-hidden="true" focusable="false" />
     </button>
+    <div class="route-modal__bg"></div>
     <div class="route-modal__scroll">
       <div id="route-dialog-content" data-route-modal-content />
     </div>
@@ -281,7 +282,20 @@ const entries = await Promise.all(
     }
   }
 
+  .route-modal__bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      url("../assets/images/modal/modal-bg-top.svg"),
+      url("../assets/images/modal/modal-bg-bottom.svg");
+    background-position:
+      left 20%,
+      right bottom;
+    background-repeat: no-repeat;
+  }
+
   .route-modal__scroll {
+    position: relative;
     max-height: min(90vh, calc(100dvh - var(--space32)));
     overflow: auto;
     overscroll-behavior: contain;
